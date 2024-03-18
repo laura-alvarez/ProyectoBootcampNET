@@ -10,7 +10,5 @@ namespace TaskManager.Domain.Entities
     {
         public int Id { get; set; }
         public string State { get; set; }
-
-        public ICollection<TaskEntity> Task { get; set; }
     }
 }

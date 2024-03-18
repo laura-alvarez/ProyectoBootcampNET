@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Categories\" />
-    <Folder Include="Models\States\" />
-    <Folder Include="Models\Tasks\" />
-    <Folder Include="Profiles\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 

@@ -19,18 +19,18 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
             public async Task AddAsync(T entity)
             {
-                _context.Set<T>().AddAsync(entity);
+                await Task.Run(() => _context.Set<T>().AddAsync(entity));
             }
 
             public async Task DeleteAsync(int id)
             {
-                var entity = GetByIdSync(id);
+                var entity = await Task.Run(() => GetByIdSync(id));
                 _context.Set<T>().Remove(entity);
             }
 
             public async Task<IEnumerable<T>> GetAllAsync()
             {
-                return _context.Set<T>().ToList();
+                return await Task.Run(() => _context.Set<T>().ToList());
             }
 
             public T GetByIdSync(int id)
@@ -45,7 +45,7 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
             public async Task UpdateAsync(T entity)
             {
-                _context.Set<T>().Update(entity);
+                await Task.Run(() => _context.Set<T>().Update(entity));
             }
 
             public void Add(T entity)

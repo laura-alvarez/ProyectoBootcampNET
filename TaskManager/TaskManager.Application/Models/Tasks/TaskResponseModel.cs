@@ -4,22 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskManager.Domain.Entities
+namespace TaskManager.Application.Models.Users
 {
-    public class TaskEntity:BaseEntity
+    public class TaskResponseModel
     {
-        public int Id { get; set; }        
+        public int Id { get; set; }
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
-
-        public UserEntity User { get; set; }
         public int UserId { get; set; }
-
-        public CategoryEntity Category { get; set; }
         public int CategoryId { get; set; }
-
-        public StateEntity State { get; set; }
         public int StateId { get; set; }
-
     }
 }

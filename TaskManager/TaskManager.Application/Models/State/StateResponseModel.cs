@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskManager.Domain.Entities
+namespace TaskManager.Application.Models.Users
 {
-    public class CategoryEntity
+    public class StateResponseModel
     {
         public int Id { get; set; }
-        public string Category { get; set; }
+        public string Name { get; set; }      
     }
 }

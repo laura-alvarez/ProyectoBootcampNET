@@ -6,12 +6,12 @@ using TaskManager.Domain.Repositories;
 
 namespace TaskManager.Application.Services
 {
-    public class UserServices : IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserServices(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace TaskManager.Application.Services
 
         public async Task<UserResponseModel> GetById(int id)
         {
-            var userEntity = _userRepository.GetByIdSync(id);
+            var userEntity = await Task.Run(() => _userRepository.GetByIdSync(id));
 
             return _mapper.Map<UserResponseModel>(userEntity);
         }

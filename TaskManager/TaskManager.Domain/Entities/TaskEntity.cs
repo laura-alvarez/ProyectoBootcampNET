@@ -12,14 +12,11 @@ namespace TaskManager.Domain.Entities
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
 
-        public UserEntity User { get; set; }
-        public int UserId { get; set; }
+        public CategoryEntity? Category { get; set; }
+        public int? CategoryId { get; set; }
 
-        public CategoryEntity Category { get; set; }
-        public int CategoryId { get; set; }
-
-        public StateEntity State { get; set; }
-        public int StateId { get; set; }
+        public StateEntity? State { get; set; }
+        public int? StateId { get; set; }
 
     }
 }

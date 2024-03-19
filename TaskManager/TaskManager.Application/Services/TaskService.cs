@@ -41,8 +41,8 @@ namespace TaskManager.Application.Services
         public async Task Add(TaskRequestModel entity)
         {
             var taskEntity = _mapper.Map<TaskEntity>(entity);
-            taskEntity.CreatedBy = "Admin";
-            taskEntity.UpdatedBy = "Admin";
+            //taskEntity.CreatedBy = "Admin";
+            //taskEntity.UpdatedBy = "Admin";
             await _taskRepository.AddAsync(taskEntity);
             await _taskRepository.SaveChangesAsync();
         }

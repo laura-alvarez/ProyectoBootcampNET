@@ -7,11 +7,6 @@ using TaskManager.Application.Services.Interfaces;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Connection to the SQL Server Database
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 /*try
 {
     string? conecte = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -25,11 +20,17 @@ catch (Exception ex)
 {
     Console.WriteLine("Error al conectar a la base de datos: " + ex.Message);
 }*/
+// Add services to the container.
+// Connection to the SQL Server Database
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
-//builder.Services.AddScoped<IUserRepository,UserRepository>();
+
+
+builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 //builder.Services.AddScoped<IStateRepository, StateRepository>();
 

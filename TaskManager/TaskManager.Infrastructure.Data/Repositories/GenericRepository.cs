@@ -19,7 +19,7 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
             public async Task AddAsync(T entity)
             {
-                await Task.Run(() => _context.Set<T>().AddAsync(entity));
+                await _context.Set<T>().AddAsync(entity);
             }
 
             public async Task DeleteAsync(int id)

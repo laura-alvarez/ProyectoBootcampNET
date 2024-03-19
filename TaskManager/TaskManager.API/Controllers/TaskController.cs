@@ -24,5 +24,11 @@ namespace TaskManager.API.Controllers
 
         [HttpGet("GetAllTaskByUserId")]
         public Task<IEnumerable<TaskResponseModel>> GetAllTaskByUserId(int userId) => _taskService.GetAllByUserId(userId);
+
+        [HttpPut("AddTask")]
+        public void AddTask(TaskRequestModel task)
+        {
+            _taskService.Add(task);
+        }
     }
 }

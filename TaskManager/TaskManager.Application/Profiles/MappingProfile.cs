@@ -8,9 +8,11 @@ namespace TaskManager.Application.Profiles
     {
         public MappingProfile()
         {
+            CreateMap<UserEntity, UserResponseModel>();
+            CreateMap<UserRequestModel, UserEntity>();
+
             CreateMap<TaskEntity, TaskResponseModel>();
             CreateMap<TaskRequestModel, TaskEntity>();
-            // Agrega más configuraciones de mapeo aquí si es necesario
         }
     }
 }

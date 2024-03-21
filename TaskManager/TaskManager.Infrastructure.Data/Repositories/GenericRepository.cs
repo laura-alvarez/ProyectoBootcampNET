@@ -30,7 +30,10 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
             public async Task<IEnumerable<T>> GetAllAsync()
             {
-                return await Task.Run(() => _context.Set<T>().ToList());
+                using (_context)
+                {
+                    return await Task.Run(() => _context.Set<T>().ToList());
+                }
             }
 
             public T GetByIdSync(int id)
@@ -53,9 +56,9 @@ namespace TaskManager.Infrastructure.Data.Repositories
                 _context.Set<T>().Add(entity);
             }
 
-            public async Task SaveChangesAsync()
+            public Task SaveChangesAsync()
             {
-                await _context.SaveChangesAsync();
+                return _context.SaveChangesAsync();                
             }
         }   
 }

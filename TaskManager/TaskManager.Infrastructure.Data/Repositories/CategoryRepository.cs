@@ -9,5 +9,6 @@ namespace TaskManager.Infrastructure.Data.Repositories
         public CategoryRepository(DataContext context) : base(context)
         {
         }
+        
     }
 }

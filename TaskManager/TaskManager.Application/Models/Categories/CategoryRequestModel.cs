@@ -9,7 +9,7 @@ namespace TaskManager.Application.Models.Users
 {
     public class CategoryRequestModel
     {
-        public string Name { get; set; }        
+        public string Category { get; set; }        
 
     }
 }

@@ -22,9 +22,9 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpPut("AddCategory")]
-        public void AddTask(CategoryRequestModel category)
+        public async Task AddTask(CategoryRequestModel category)
         {
-            _categoryService.Add(category);
+            await _categoryService.Add(category);
         }
     }
 }

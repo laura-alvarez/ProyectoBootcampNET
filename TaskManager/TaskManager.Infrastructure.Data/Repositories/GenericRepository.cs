@@ -56,9 +56,10 @@ namespace TaskManager.Infrastructure.Data.Repositories
                 _context.Set<T>().Add(entity);
             }
 
-            public Task SaveChangesAsync()
+            public async Task<int> SaveChangesAsync()
             {
-                return _context.SaveChangesAsync();                
+                int result =  await _context.SaveChangesAsync();
+                return result;   
             }
         }   
 }

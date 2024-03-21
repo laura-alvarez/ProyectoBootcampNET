@@ -30,11 +30,11 @@ namespace TaskManager.Application.Services
 
             return _mapper.Map<CategoryResponseModel>(categoryEntity);
         }
-        public Task Add(CategoryRequestModel entity)
+        public async Task Add(CategoryRequestModel entity)
         {
             var categoryEntity = _mapper.Map<CategoryEntity>(entity);          
-            _categoryRepository.AddAsync(categoryEntity);
-            return _categoryRepository.SaveChangesAsync();
+            _categoryRepository.Add(categoryEntity);
+            await _categoryRepository.SaveChangesAsync();
         }
 
         public async Task Update(CategoryRequestModel entity, int id)

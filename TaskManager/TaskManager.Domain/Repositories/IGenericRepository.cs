@@ -16,6 +16,6 @@ namespace TaskManager.Domain.Repositories
 
         void Add(T entity);
         Task<T> GetByIdAsync(int id);
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

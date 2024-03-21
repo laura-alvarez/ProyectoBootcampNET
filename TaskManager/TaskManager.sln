@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.API", "TaskManager.API\TaskManager.API.csproj", "{120F2CF1-9D4D-4895-A536-6FCD47D7E7C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.API", "TaskManager.API\TaskManager.API.csproj", "{120F2CF1-9D4D-4895-A536-6FCD47D7E7C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Application", "TaskManager.Application\TaskManager.Application.csproj", "{EE413E8C-800F-4201-9927-E83CAF1AFE11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Application", "TaskManager.Application\TaskManager.Application.csproj", "{EE413E8C-800F-4201-9927-E83CAF1AFE11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Domain", "TaskManager.Domain\TaskManager.Domain.csproj", "{64215881-E499-473E-8686-758DBDFC0374}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Domain", "TaskManager.Domain\TaskManager.Domain.csproj", "{64215881-E499-473E-8686-758DBDFC0374}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Infrastructure.Data", "TaskManager.Infrastructure.Data\TaskManager.Infrastructure.Data.csproj", "{EA3AE6F8-56AC-4599-A868-1C5FD55F3F60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Infrastructure.Data", "TaskManager.Infrastructure.Data\TaskManager.Infrastructure.Data.csproj", "{EA3AE6F8-56AC-4599-A868-1C5FD55F3F60}"
 	ProjectSection(ProjectDependencies) = postProject
 		{64215881-E499-473E-8686-758DBDFC0374} = {64215881-E499-473E-8686-758DBDFC0374}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Client", "TaskManager.Client\TaskManager.Client.csproj", "{02D8982A-6896-4EE4-A9B3-C797AC15B368}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{EA3AE6F8-56AC-4599-A868-1C5FD55F3F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA3AE6F8-56AC-4599-A868-1C5FD55F3F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA3AE6F8-56AC-4599-A868-1C5FD55F3F60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D8982A-6896-4EE4-A9B3-C797AC15B368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D8982A-6896-4EE4-A9B3-C797AC15B368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D8982A-6896-4EE4-A9B3-C797AC15B368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D8982A-6896-4EE4-A9B3-C797AC15B368}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -36,7 +36,7 @@ namespace TaskManager.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("TaskManager.Domain.Entities.StateEntity", b =>
@@ -53,7 +53,7 @@ namespace TaskManager.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("States");
+                    b.ToTable("State");
                 });
 
             modelBuilder.Entity("TaskManager.Domain.Entities.TaskEntity", b =>
@@ -151,7 +151,7 @@ namespace TaskManager.Infrastructure.Data.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("TaskManager.Domain.Entities.TaskEntity", b =>

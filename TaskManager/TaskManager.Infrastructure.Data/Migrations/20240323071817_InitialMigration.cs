@@ -12,7 +12,7 @@ namespace TaskManager.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Category",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -21,11 +21,11 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_Category", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "States",
+                name: "State",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,11 +34,11 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_States", x => x.Id);
+                    table.PrimaryKey("PK_State", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -55,16 +55,16 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Users_CreatedBy",
+                        name: "FK_User_User_CreatedBy",
                         column: x => x.CreatedBy,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Users_Users_UpdatedBy",
+                        name: "FK_User_User_UpdatedBy",
                         column: x => x.UpdatedBy,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id");
                 });
 
@@ -88,24 +88,24 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_Task", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Task_Categories_CategoryId",
+                        name: "FK_Task_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Categories",
+                        principalTable: "Category",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Task_States_StateId",
+                        name: "FK_Task_State_StateId",
                         column: x => x.StateId,
-                        principalTable: "States",
+                        principalTable: "State",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Task_Users_CreatedBy",
+                        name: "FK_Task_User_CreatedBy",
                         column: x => x.CreatedBy,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Task_Users_UpdatedBy",
+                        name: "FK_Task_User_UpdatedBy",
                         column: x => x.UpdatedBy,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id");
                 });
 
@@ -130,13 +130,13 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 column: "UpdatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_CreatedBy",
-                table: "Users",
+                name: "IX_User_CreatedBy",
+                table: "User",
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_UpdatedBy",
-                table: "Users",
+                name: "IX_User_UpdatedBy",
+                table: "User",
                 column: "UpdatedBy");
         }
 
@@ -147,13 +147,13 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 name: "Task");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Category");
 
             migrationBuilder.DropTable(
-                name: "States");
+                name: "State");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "User");
         }
     }
 }

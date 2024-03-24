@@ -21,10 +21,30 @@ namespace TaskManager.API.Controllers
             return _categoryService.GetAll();
         }
 
-        [HttpPut("AddCategory")]
-        public async Task AddTask(CategoryRequestModel category)
+        [HttpGet("GetCategory")]
+        public async Task<CategoryResponseModel> GetCategory(int idCategory)
+        {
+            return await _categoryService.GetById(idCategory);
+        }
+
+        [HttpPost("AddCategory")]
+        public async Task AddCategory(CategoryRequestModel category)
         {
             await _categoryService.Add(category);
+        }
+
+        [HttpPut("UpdateCategory")]
+        public async Task UpdateCategory(CategoryRequestModel category, int idCategory)
+        {
+            await _categoryService.Update(category, idCategory);
+        }
+
+
+
+        [HttpDelete("DeleteCategory")]
+        public async Task DeleteCategory(int idCategory)
+        {
+            await _categoryService.Delete(idCategory);
         }
     }
 }

@@ -21,10 +21,28 @@ namespace TaskManager.API.Controllers
            return _userService.GetAll();
         }
 
-        [HttpPut("AddUser")]
-        public async void AddTask(UserRequestModel user)
+        [HttpGet("GetUser")]
+        public Task<UserResponseModel> GetUser(int idUser)
+        {
+            return _userService.GetById(idUser);
+        }
+
+        [HttpPost("AddUser")]
+        public async Task AddTask(UserRequestModel user)
         {
             await _userService.Add(user);
+        }
+
+        [HttpPut("UpdateUser")]
+        public async Task UpdateUser(UserRequestModel user, int idUser)
+        {
+            await _userService.Update(user, idUser);
+        }
+
+        [HttpDelete("DeleteUser")]
+        public async Task DeleteUser(int idUser)
+        {
+            await _userService.Delete(idUser);
         }
     }
 }

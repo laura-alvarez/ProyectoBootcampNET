@@ -1,0 +1,19 @@
+
+
+#registroModal {
+    background-color: deepskyblue;
+    border-radius: 10px;
+    text-align: center;
+    width: 350px;
+}
+
+.contenedor {
+    width: 400px; /* Ancho del div */
+    height: 300px; /* Alto del div */
+    background-image: url('file:///C:/Users/rgram/Downloads/woman.jpg'); /* Ruta absoluta de la imagen */
+    background-size: cover; /* Ajustar el tamaño de la imagen para cubrir el div */
+    background-position: center; /* Centrar la imagen en el div */
+    /* Otros estilos opcionales */
+    border: 1px solid #000; /* Borde del div */
+    border-radius: 10px; /* Radio de borde */
+}

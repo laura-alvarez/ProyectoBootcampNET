@@ -1,7 +1,35 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Inicio</PageTitle>
 
-<h1>Hello, world!</h1>
+<div id="formulario registro" class="contenedor">
+    <EditForm Model="registro" FormName="Login">
 
-Welcome to your new app.
+        <div id="registroModal">
+            <div style="padding-top:20px !important;margin-bottom:5px">
+                <label>
+                        Email: <input placeholder="Introduzca un email" />
+                </label>
+            </div>
+    
+            <div style="margin-bottom:5px">
+                <label>
+                    Contraseña: <input type="password" placeholder="Introduzca contraseña" @bind="password" />
+                </label>
+            </div>
+    
+            <button style="margin-bottom:20px" class="btn btn-primary">Iniciar sesión</button>
+        </div>
+   
+
+    </EditForm>
+</div>
+@code {
+
+    private string password;
+    TestModel registro = new TestModel();
+
+    class TestModel{
+
+    }
+}

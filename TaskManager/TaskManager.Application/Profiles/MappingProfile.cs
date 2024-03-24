@@ -16,6 +16,9 @@ namespace TaskManager.Application.Profiles
 
             CreateMap<CategoryEntity, CategoryResponseModel>();
             CreateMap<CategoryRequestModel, CategoryEntity>();
+
+            CreateMap<StateEntity, StateResponseModel>();
+            CreateMap<StateRequestModel, StateEntity>();
         }
     }
 }

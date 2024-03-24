@@ -9,5 +9,8 @@ namespace TaskManager.Domain.Repositories
 {
     public interface IUserRepository : IGenericRepository<UserEntity>
     {
+        bool CheckUser(string email, string password);
     }
+
+
 }

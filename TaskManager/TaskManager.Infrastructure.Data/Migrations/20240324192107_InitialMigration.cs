@@ -17,7 +17,8 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,8 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,26 +48,14 @@ namespace TaskManager.Infrastructure.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true)
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_User_User_CreatedBy",
-                        column: x => x.CreatedBy,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_User_User_UpdatedBy",
-                        column: x => x.UpdatedBy,
-                        principalTable: "User",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -76,13 +66,12 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TaskDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
-                    StateId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true)
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,13 +87,8 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         principalTable: "State",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Task_User_CreatedBy",
-                        column: x => x.CreatedBy,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Task_User_UpdatedBy",
-                        column: x => x.UpdatedBy,
+                        name: "FK_Task_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id");
                 });
@@ -115,29 +99,14 @@ namespace TaskManager.Infrastructure.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_CreatedBy",
-                table: "Task",
-                column: "CreatedBy");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Task_StateId",
                 table: "Task",
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_UpdatedBy",
+                name: "IX_Task_UserId",
                 table: "Task",
-                column: "UpdatedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_CreatedBy",
-                table: "User",
-                column: "CreatedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_UpdatedBy",
-                table: "User",
-                column: "UpdatedBy");
+                column: "UserId");
         }
 
         /// <inheritdoc />

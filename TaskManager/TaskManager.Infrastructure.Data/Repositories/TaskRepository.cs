@@ -13,8 +13,10 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
         public Task<List<TaskEntity>> GetAllByUserIdAsync(int idUser)
         {
-           return _context.Set<TaskEntity>().ToListAsync();
+           return _context.Set<TaskEntity>().Where(task => task.UserId == idUser).ToListAsync();
            
         }
+
+
     }
 }

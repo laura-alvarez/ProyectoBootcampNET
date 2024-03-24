@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskManager.Domain.Entities
 {
-    public class StateEntity
+    public class StateEntity: LogicDeleteEntity
     {
         public int Id { get; set; }
         public string State { get; set; }

@@ -10,29 +10,11 @@ namespace TaskManager.Infrastructure.Data.Data
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserEntity>()
-                .HasOne(o => o.UserCreate)
-                .WithMany()
-                .HasForeignKey(o => o.CreatedBy)
-                .OnDelete(DeleteBehavior.NoAction); 
-
-            modelBuilder.Entity<UserEntity>()
-                .HasOne(o => o.UserUpdate)
-                .WithMany()
-                .HasForeignKey(o => o.UpdatedBy)
-                .OnDelete(DeleteBehavior.NoAction);
-
+        {          
             modelBuilder.Entity<TaskEntity>()
-                .HasOne(o => o.UserCreate)
+                .HasOne(o => o.User)
                 .WithMany()
-                .HasForeignKey(o => o.CreatedBy)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<TaskEntity>()
-                .HasOne(o => o.UserUpdate)
-                .WithMany()
-                .HasForeignKey(o => o.UpdatedBy)
+                .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<TaskEntity>()

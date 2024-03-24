@@ -9,7 +9,7 @@ namespace TaskManager.Application.Models.Users
 {
     public class StateRequestModel
     {
-        public string Name { get; set; }        
+        public string State { get; set; }        
 
     }
 }

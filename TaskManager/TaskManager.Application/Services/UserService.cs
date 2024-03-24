@@ -31,13 +31,11 @@ namespace TaskManager.Application.Services
             return _mapper.Map<UserResponseModel>(userEntity);
         }
 
-        public Task Add(UserRequestModel entity)
+        public async Task Add(UserRequestModel entity)
         {
-            var productEntity = _mapper.Map<UserEntity>(entity);
-            //productEntity.CreatedBy = "Admin";
-            //productEntity.UpdatedBy = "Admin";
-            _userRepository.AddAsync(productEntity);
-            return _userRepository.SaveChangesAsync();
+            var userEntity = _mapper.Map<UserEntity>(entity);           
+            _userRepository.Add(userEntity);
+            await _userRepository.SaveChangesAsync();
         }
 
         public async Task Update(UserRequestModel entity, int id)

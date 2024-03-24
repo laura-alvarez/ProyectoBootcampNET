@@ -12,7 +12,7 @@ using TaskManager.Infrastructure.Data.Data;
 namespace TaskManager.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240323071817_InitialMigration")]
+    [Migration("20240324192107_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -37,6 +37,9 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Category");
@@ -49,6 +52,9 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -67,19 +73,16 @@ namespace TaskManager.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CreatedBy")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("StateId")
+                    b.Property<int>("StateId")
                         .HasColumnType("int");
 
                     b.Property<string>("TaskDescription")
@@ -90,21 +93,19 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Task");
                 });
@@ -117,9 +118,6 @@ namespace TaskManager.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -127,7 +125,7 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -138,21 +136,14 @@ namespace TaskManager.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("User");
                 });
@@ -162,47 +153,26 @@ namespace TaskManager.Infrastructure.Data.Migrations
                     b.HasOne("TaskManager.Domain.Entities.CategoryEntity", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("TaskManager.Domain.Entities.UserEntity", "UserCreate")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("TaskManager.Domain.Entities.StateEntity", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("TaskManager.Domain.Entities.UserEntity", "UserUpdate")
+                    b.HasOne("TaskManager.Domain.Entities.UserEntity", "User")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
                     b.Navigation("State");
 
-                    b.Navigation("UserCreate");
-
-                    b.Navigation("UserUpdate");
-                });
-
-            modelBuilder.Entity("TaskManager.Domain.Entities.UserEntity", b =>
-                {
-                    b.HasOne("TaskManager.Domain.Entities.UserEntity", "UserCreate")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("TaskManager.Domain.Entities.UserEntity", "UserUpdate")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("UserCreate");
-
-                    b.Navigation("UserUpdate");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

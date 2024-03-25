@@ -12,7 +12,7 @@ namespace TaskManager.Infrastructure.Data.Repositories
 
         public bool CheckUser(string email, string password)
         {            
-           return _context.Set<UserEntity>().Where(user => user.Email == email).Any();        
+           return _context.Set<UserEntity>().Where(user => user.Email == email && user.Password == password).Any();        
         }
     }
 }

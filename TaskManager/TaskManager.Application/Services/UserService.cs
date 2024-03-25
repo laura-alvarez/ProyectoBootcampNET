@@ -53,5 +53,10 @@ namespace TaskManager.Application.Services
             await _userRepository.DeleteAsync(id);
             await _userRepository.SaveChangesAsync();
         }
+
+        public async Task<bool> CheckUser(string email, string password)
+        {
+            return _userRepository.CheckUser(email, password);
+        }
     }
 }

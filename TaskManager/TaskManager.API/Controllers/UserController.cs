@@ -44,5 +44,11 @@ namespace TaskManager.API.Controllers
         {
             await _userService.Delete(idUser);
         }
+
+        [HttpGet("CheckUser")]
+        public async Task<bool> CheckUser(string email, string password)
+        {
+            return await _userService.CheckUser(email, password);
+        }
     }
 }

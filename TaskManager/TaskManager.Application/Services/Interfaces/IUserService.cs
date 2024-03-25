@@ -14,5 +14,6 @@ namespace TaskManager.Application.Services.Interfaces
         Task Add(UserRequestModel entity);
         Task Update(UserRequestModel entity, int id);
         Task Delete(int id);
+        Task<bool> CheckUser(string email, string password);
     }
 }

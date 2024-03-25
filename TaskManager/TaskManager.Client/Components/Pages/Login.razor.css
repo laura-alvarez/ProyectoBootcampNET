@@ -1,0 +1,29 @@
+.fondo {
+    /*background-image: linear-gradient(to top,#000080, #000080) !important;*/ /* Establece el color de fondo azul */
+    /* Otros estilos opcionales */
+    background-color: #1b97c2;
+    margin-top: -10%; /* Agrega un relleno para el contenido dentro del div */
+    color: white; /* Cambia el color del texto para que sea visible en el fondo azul */
+    padding: 20px;
+    border-radius: 10px;
+    border-color: blue;
+    max-height: 300px;
+}
+
+
+
+
+#loginModal {
+    padding-top:1%;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.3)), url('https://www.claromentis.com/wp-content/uploads/2021/04/6-Great-Benefits-of-Using-Employee-Task-Management-Software-768x432.png');
+   
+    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el body */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    background-color: transparent;
+    /*margin-top: -20px;*/
+    /* Otros estilos opcionales */
+    /*margin: 0;*/ /* Asegura que no haya márgenes */
+    /*padding: 0;*/ /* Asegura que no haya relleno */
+    height: 90vh; /* Ajusta la altura para que el fondo cubra todo el body */
+}

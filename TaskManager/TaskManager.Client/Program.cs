@@ -1,10 +1,24 @@
+using Blazored.SessionStorage;
+using BlazorLogin.Client.Extensiones;
+using Microsoft.AspNetCore.Components.Authorization;
 using TaskManager.Client.Components;
+using TaskManager.Client.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
+builder.Services.AddAuthorizationCore();
+
+builder.Services.AddScoped<User>();
+HttpClient client = new();
+client.BaseAddress = new("http://localhost:7184");
+builder.Services.AddSingleton(client);
+
 
 var app = builder.Build();
 

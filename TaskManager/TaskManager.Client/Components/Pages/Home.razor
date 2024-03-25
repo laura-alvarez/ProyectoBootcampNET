@@ -1,35 +1,17 @@
-﻿@page "/"
+﻿@page "/Index"
 
-<PageTitle>Inicio</PageTitle>
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@* @attribute [Authorize] *@
 
-<div id="formulario registro" class="contenedor">
-    <EditForm Model="registro" FormName="Login">
+<PageTitle>Index</PageTitle>
 
-        <div id="registroModal">
-            <div style="padding-top:20px !important;margin-bottom:5px">
-                <label>
-                        Email: <input placeholder="Introduzca un email" />
-                </label>
-            </div>
-    
-            <div style="margin-bottom:5px">
-                <label>
-                    Contraseña: <input type="password" placeholder="Introduzca contraseña" @bind="password" />
-                </label>
-            </div>
-    
-            <button style="margin-bottom:20px" class="btn btn-primary">Iniciar sesión</button>
-        </div>
-   
+<h1>Hello, world!</h1>
 
-    </EditForm>
-</div>
-@code {
+Welcome to your new app.
 
-    private string password;
-    TestModel registro = new TestModel();
-
-    class TestModel{
-
-    }
-}
+<AuthorizeView>
+    <Authorized>
+        <h1>Bienvenido @context.User.Identity!.Name</h1>
+    </Authorized>
+</AuthorizeView>

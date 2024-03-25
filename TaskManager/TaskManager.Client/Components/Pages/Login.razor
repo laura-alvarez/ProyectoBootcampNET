@@ -1,0 +1,67 @@
+﻿@page "/"
+@layout Layout.LoginLayout
+@rendermode InteractiveServer
+
+
+@inject AuthenticationStateProvider autenticacionProvider
+@inject NavigationManager navManager
+@inject User Service
+
+
+
+<div id="loginModal" class="row mt-5">
+    <h1 style="text-align:center">Gestor de tareas</h1>
+    <div class="fondo col-lg-4 offset-lg-4 border">
+
+        <div class="mb-3 text-center">
+            <h3>LOGIN</h3>
+        </div>
+
+        <div class="mb-3">
+            <label>Correo</label>
+            <input @bind="login.Email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Contraseña</label>
+            <input @bind="login.Password" class="form-control" />
+        </div>
+
+        <div style="text-align:center" class="mb-3">
+            <button @onclick="onInit" class="btn btn-primary">Login</button>
+        </div>
+       
+
+    </div>
+
+</div>
+
+
+@code {
+
+    private LoginDTO login = new LoginDTO();
+
+    private async Task IniciarSesion()
+    {
+
+        navManager.NavigateTo("/Index");
+        //     // var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
+        //     // if (loginResponse.IsSuccessStatusCode)
+        //     // {
+        //     //     var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
+        //     //     var autenticacionExt = (AutenticacionExtension)autenticacionProvider;
+        //     //     await autenticacionExt.ActualizarEstadoAutenticacion(sesionUsuario);
+
+        //     //     navManager.NavigateTo("/Index");
+        //     // }
+    }
+
+    private IEnumerable<LoginDTO>? loginNew;
+
+    protected  async Task onInit()
+    {
+        loginNew = await Service.GetUserAsync();
+    }
+
+
+}

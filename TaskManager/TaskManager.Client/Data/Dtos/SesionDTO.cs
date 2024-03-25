@@ -8,8 +8,8 @@ namespace TaskManager.Client.Data.Dtos
 {
     public class SesionDTO
     {
-        public string Nombre { get; set; }
-        public string Correo { get; set; }
-        public string Rol { get; set; }
+        public required string Nombre { get; set; }
+        public required string Correo { get; set; }
+        //public bool Rol { get; set; }
     }
 }

@@ -57,10 +57,19 @@
     }
 
     private IEnumerable<LoginDTO>? loginNew;
+    private Boolean isCorrect = false;
 
     protected  async Task onInit()
     {
-        loginNew = await Service.GetUserAsync();
+        isCorrect = await Service.GetUserAsync(login.Email, login.Password);
+
+        if (isCorrect)
+        {
+            var autenticationExt = (AutenticacionExtension)autenticacionProvider;
+            await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
+
+            navManager.NavigateTo("/Index");
+        }
     }
 
 

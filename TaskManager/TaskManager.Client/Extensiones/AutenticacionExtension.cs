@@ -25,8 +25,8 @@ namespace BlazorLogin.Client.Extensiones
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,sesionUsuario.Nombre),
-                    new Claim(ClaimTypes.Email,sesionUsuario.Correo),
-                    new Claim(ClaimTypes.Role,sesionUsuario.Rol)
+                    new Claim(ClaimTypes.Email,sesionUsuario.Correo)
+                    
                 },"JwtAuth"));
 
                 await _sessionStorage.GuardarStorage("sesionUsuario", sesionUsuario);
@@ -53,8 +53,8 @@ namespace BlazorLogin.Client.Extensiones
             var claimPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,sesionUsuario.Nombre),
-                    new Claim(ClaimTypes.Email,sesionUsuario.Correo),
-                    new Claim(ClaimTypes.Role,sesionUsuario.Rol)
+                    new Claim(ClaimTypes.Email,sesionUsuario.Correo)
+                    
                 }, "JwtAuth"));
 
 

@@ -1,5 +1,7 @@
 using Blazored.SessionStorage;
 using BlazorLogin.Client.Extensiones;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using TaskManager.Client.Components;
 using TaskManager.Client.Data.Services;
@@ -14,9 +16,10 @@ builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
 builder.Services.AddAuthorizationCore();
 
+
 builder.Services.AddScoped<User>();
 HttpClient client = new();
-client.BaseAddress = new("http://localhost:7184");
+client.BaseAddress = new("https://localhost:7184");
 builder.Services.AddSingleton(client);
 
 

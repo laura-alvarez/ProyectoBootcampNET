@@ -23,7 +23,7 @@ namespace TaskManager.Client.Data.Services
             return user;
         }
 
-        public async Task<Boolean>? GetUserAsync(string param1, string param2)
+        public async Task<Boolean> GetUserAsync(string param1, string param2)
         {
             string url = $"User/CheckUser?email={param1}&password={param2}";
 

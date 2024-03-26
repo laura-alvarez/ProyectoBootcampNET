@@ -12,9 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddBlazoredSessionStorage();
-builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
-builder.Services.AddAuthorizationCore();
+//builder.Services.AddBlazoredSessionStorage();
+//builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
+//builder.Services.AddAuthorizationCore();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "auth_token";
+        options.LoginPath = "/";
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+        options.AccessDeniedPath = "/access-denied";
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 
 builder.Services.AddScoped<User>();

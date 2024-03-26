@@ -1,4 +1,6 @@
 ﻿@page "/"
+
+
 @layout Layout.LoginLayout
 @rendermode InteractiveServer
 
@@ -20,11 +22,13 @@
         <div class="mb-3">
             <label>Correo</label>
             <input @bind="login.Email" class="form-control" />
+            <ValidationMessage For="() => login.Email" />
         </div>
 
         <div class="mb-3">
             <label>Contraseña</label>
             <input @bind="login.Password" class="form-control" />
+            <ValidationMessage For="() => login.Password"/>
         </div>
 
         <div style="text-align:center" class="mb-3">
@@ -38,39 +42,71 @@
 
 
 @code {
+    [CascadingParameter]
 
-    private LoginDTO login = new LoginDTO();
+    public HttpContext? HttpContext{ get; set; }
 
-    private async Task IniciarSesion()
-    {
+    [SupplyParameterFromForm]
 
-        navManager.NavigateTo("/Index");
-        //     // var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
-        //     // if (loginResponse.IsSuccessStatusCode)
-        //     // {
-        //     //     var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
-        //     //     var autenticacionExt = (AutenticacionExtension)autenticacionProvider;
-        //     //     await autenticacionExt.ActualizarEstadoAutenticacion(sesionUsuario);
+    public LoginDTO login { get; set; } = new();
 
-        //     //     navManager.NavigateTo("/Index");
-        //     // }
-    }
-
-    private IEnumerable<LoginDTO>? loginNew;
+    private string? errorMessage;
     private Boolean isCorrect = false;
 
-    protected  async Task onInit()
+    private  async Task onInit()
     {
         isCorrect = await Service.GetUserAsync(login.Email, login.Password);
 
         if (isCorrect)
         {
-            var autenticationExt = (AutenticacionExtension)autenticacionProvider;
-            await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
+            // var autenticationExt = (AutenticacionExtension)autenticacionProvider;
+            // await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, login.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.
             navManager.NavigateTo("/Index");
         }
     }
+
+    //private LoginDTO login = new LoginDTO();
+
+    // private async Task IniciarSesion()
+    // {
+
+    //     navManager.NavigateTo("/Index");
+    //     //     // var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
+    //     //     // if (loginResponse.IsSuccessStatusCode)
+    //     //     // {
+    //     //     //     var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
+    //     //     //     var autenticacionExt = (AutenticacionExtension)autenticacionProvider;
+    //     //     //     await autenticacionExt.ActualizarEstadoAutenticacion(sesionUsuario);
+
+    //     //     //     navManager.NavigateTo("/Index");
+    //     //     // }
+    // }
+
+    // private IEnumerable<LoginDTO>? loginNew;
+    // private Boolean isCorrect = false;
+
+    // protected  async Task onInit()
+    // {
+    //     isCorrect = await Service.GetUserAsync(login.Email, login.Password);
+
+    //     if (isCorrect)
+    //     {
+    //         var autenticationExt = (AutenticacionExtension)autenticacionProvider;
+    //         await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
+
+    //         navManager.NavigateTo("/Index");
+    //     }
+    // }
 
 
 }

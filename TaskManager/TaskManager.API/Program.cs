@@ -4,6 +4,9 @@ using TaskManager.Infrastructure.Data.Data;
 using TaskManager.Infrastructure.Data.Repositories;
 using TaskManager.Application.Services;
 using TaskManager.Application.Services.Interfaces;
+using FluentValidation.AspNetCore;
+using TaskManager.Application.Validations;
+using FluentValidation;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +27,11 @@ catch (Exception ex)
 // Connection to the SQL Server Database
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<TaskValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<StateValidation>();
 
 builder.Services.AddSingleton(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddScoped<ITaskService, TaskService>();
@@ -35,7 +42,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
-
+    
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

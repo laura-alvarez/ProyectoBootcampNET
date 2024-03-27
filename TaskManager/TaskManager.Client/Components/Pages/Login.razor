@@ -1,112 +1,110 @@
 ﻿@page "/"
 
-
 @layout Layout.LoginLayout
 @rendermode InteractiveServer
 
-
-@inject AuthenticationStateProvider autenticacionProvider
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Http
 @inject NavigationManager navManager
 @inject User Service
+@* @inject IAuthService AuthService
+@inject IHttpContextAccessor HttpContextAccessor *@
 
-
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
 
 <div id="loginModal" class="row mt-5">
     <h1 style="text-align:center">Gestor de tareas</h1>
-    <div class="fondo col-lg-4 offset-lg-4 border">
+    <EditForm Model="@login" OnValidSubmit="onInitNew" FormName="LoginForm">
+        <DataAnnotationsValidator />
 
-        <div class="mb-3 text-center">
-            <h3>LOGIN</h3>
+        <div class="fondo col-lg-4 offset-lg-4 border">
+            <div class="mb-3 text-center">
+                <h3>LOGIN</h3>
+            </div>
+
+            <div class="mb-3">
+                <label>Correo</label>
+                <InputText @bind-Value="login.Email" class="form-control" />
+                <ValidationMessage For="() => login.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label>Contraseña</label>
+                <InputText @bind-Value="login.Password" class="form-control" />
+                <ValidationMessage For="() => login.Password" />
+            </div>
+
+            <div style="text-align:center" class="mb-3">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label>Correo</label>
-            <input @bind="login.Email" class="form-control" />
-            <ValidationMessage For="() => login.Email" />
-        </div>
-
-        <div class="mb-3">
-            <label>Contraseña</label>
-            <input @bind="login.Password" class="form-control" />
-            <ValidationMessage For="() => login.Password"/>
-        </div>
-
-        <div style="text-align:center" class="mb-3">
-            <button @onclick="onInit" class="btn btn-primary">Login</button>
-        </div>
-       
-
-    </div>
-
+    </EditForm>
 </div>
 
-
 @code {
-    [CascadingParameter]
-
-    public HttpContext? HttpContext{ get; set; }
-
-    [SupplyParameterFromForm]
-
     public LoginDTO login { get; set; } = new();
+    private bool isCorrect = false;
+    private bool IsAuthenticated;
 
-    private string? errorMessage;
-    private Boolean isCorrect = false;
 
-    private  async Task onInit()
+    private async Task onInit()
     {
-        isCorrect = await Service.GetUserAsync(login.Email, login.Password);
-
-        if (isCorrect)
+        try
         {
-            // var autenticationExt = (AutenticacionExtension)autenticacionProvider;
-            // await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
+            isCorrect = await Service.GetUserAsync(login.Email, login.Password);
 
-            var claims = new List<Claim>
+            if (isCorrect)
+            {
+                var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, login.Email)
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.
+                // Llama a SignInAsync antes de cualquier redirección o respuesta de contenido
+               // await AuthService.SignInAsync(principal);
+                navManager.NavigateTo("/Index");
+            }
+        }
+        catch (Exception ex)
+        {
             navManager.NavigateTo("/Index");
+            // Registra el error en la consola de depuración
+            Console.WriteLine($"Error en el método onInit(): {ex.Message}");
+            // También puedes registrar el error en un archivo de registro si lo prefieres
+            // logger.LogError($"Error en el método onInit(): {ex}");
         }
     }
 
-    //private LoginDTO login = new LoginDTO();
+    private async Task onInitNew()
+    {
+        var response = await Service.GetUserAsync(login.Email, login.Password);
+        if (response)
+        {
+            
+         //   var token = await response.Content.ReadAsStringAsync();
+        var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJncmFtb24wNUBnbWFpbC5jb20ifQ.8toApMr3wEU12iAPI0qg19r_r_sYjI8_Srj1EWHyVuQ";
 
-    // private async Task IniciarSesion()
-    // {
 
-    //     navManager.NavigateTo("/Index");
-    //     //     // var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
-    //     //     // if (loginResponse.IsSuccessStatusCode)
-    //     //     // {
-    //     //     //     var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
-    //     //     //     var autenticacionExt = (AutenticacionExtension)autenticacionProvider;
-    //     //     //     await autenticacionExt.ActualizarEstadoAutenticacion(sesionUsuario);
+            // Guarda el token JWT en el almacenamiento local
+            await LocalStorage.SetItemAsStringAsync("authToken", token);
+            // Actualiza el estado de autenticación
+            IsAuthenticated = true;
+            // Redirige a la página de inicio
+            NavigationManager.NavigateTo("/Index");
+        }
 
-    //     //     //     navManager.NavigateTo("/Index");
-    //     //     // }
-    // }
 
-    // private IEnumerable<LoginDTO>? loginNew;
-    // private Boolean isCorrect = false;
 
-    // protected  async Task onInit()
-    // {
-    //     isCorrect = await Service.GetUserAsync(login.Email, login.Password);
 
-    //     if (isCorrect)
-    //     {
-    //         var autenticationExt = (AutenticacionExtension)autenticacionProvider;
-    //         await autenticationExt.ActualizarEstadoAutenticacion(new SesionDTO{Nombre=login.Email, Correo =login.Email});
 
-    //         navManager.NavigateTo("/Index");
-    //     }
-    // }
-
+           
+        
+    }
 
 }

@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using BlazorLogin.Client.Extensiones;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,9 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
 //builder.Services.AddBlazoredSessionStorage();
 //builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
 //builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -26,7 +29,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
-
+builder.Services.AddHttpContextAccessor(); // Asegúrate de registrar IHttpContextAccessor
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<User>();
 HttpClient client = new();
@@ -44,10 +48,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

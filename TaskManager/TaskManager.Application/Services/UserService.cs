@@ -1,8 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
 using TaskManager.Domain.Entities;
 using TaskManager.Domain.Repositories;
+using TaskManager.Application.Services;
+using static TaskManager.Client.Data.Dtos.ServiceResponses;
+using System.Security.Cryptography;
+
 
 namespace TaskManager.Application.Services
 {
@@ -54,18 +62,48 @@ namespace TaskManager.Application.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<UserResponseModel> CheckUser(string email, string password)
+        public async Task<LoginResponse> CheckUser(string email, string password)
         {
             var userEntity = await Task.Run(() => _userRepository.CheckUser(email, password));
 
             if (userEntity != null)
             {
-                return _mapper.Map<UserResponseModel>(userEntity);
+                var user = _mapper.Map<UserResponseModel>(userEntity);
+                int keySizeInBytes = 16;
+
+                // Generar una clave aleatoria
+                byte[] key = GenerateRandomKey(keySizeInBytes);
+                string hexKey = ByteArrayToHexString(key);
+                var jwtService = new JWTGenerator("ab1b3089779b50d1b9bb03c3e15be7a0", "tarea", "tarea");
+                string token = jwtService.GenerateToken(user.Name, user.Email);
+                return new LoginResponse(true, token!, "Login completed");
+                
             }
             else
             {
-                throw new Exception("Datos incorrectos");
+                UserResponseModel userEmpty = new UserResponseModel();
+                return new LoginResponse(false, null!, "User not found");
+                //throw new Exception("Datos incorrectos");
             }           
         }
+
+        static byte[] GenerateRandomKey(int sizeInBytes)
+        {
+            byte[] key = new byte[sizeInBytes];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(key);
+            }
+            return key;
+        }
+
+        static string ByteArrayToHexString(byte[] bytes)
+        {
+            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+            foreach (byte b in bytes)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
+        }
+
     }
 }

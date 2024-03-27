@@ -1,9 +1,10 @@
 using Blazored.LocalStorage;
-using Blazored.SessionStorage;
-using BlazorLogin.Client.Extensiones;
+using BlazorWebAssemblyApp.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TaskManager.Client.Components;
 using TaskManager.Client.Data.Services;
 
@@ -13,25 +14,34 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
-//builder.Services.AddBlazoredSessionStorage();
-//builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
-//builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Cookie.Name = "auth_token";
-        options.LoginPath = "/";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/access-denied";
-    });
-builder.Services.AddAuthorization();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7184/") });
+
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddHttpContextAccessor(); // Asegúrate de registrar IHttpContextAccessor
+builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = "tarea",
+        ValidAudience = "tarea",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ab1b3089779b50d1b9bb03c3e15be7a0"!))
+    };
+});
+
+builder.Services.AddAuthorization();
 builder.Services.AddScoped<User>();
 HttpClient client = new();
 client.BaseAddress = new("https://localhost:7184");

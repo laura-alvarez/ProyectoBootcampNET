@@ -16,4 +16,11 @@ namespace TaskManager.Client.Data.Dtos
         public string? Password { get; set; }
       
     }
+
+    public class LoginModel
+    {
+        public string? Name { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+    }
 }

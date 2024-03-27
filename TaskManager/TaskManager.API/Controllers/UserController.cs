@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
+using static TaskManager.Client.Data.Dtos.ServiceResponses;
 
 namespace TaskManager.API.Controllers
 {
@@ -46,7 +47,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("CheckUser")]
-        public async Task<UserResponseModel> CheckUser(string email, string password)
+        public async Task<LoginResponse> CheckUser(string email, string password)
         { 
             return await _userService.CheckUser(email, password);        
         }

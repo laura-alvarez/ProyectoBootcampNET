@@ -3,13 +3,17 @@
 @layout Layout.LoginLayout
 @rendermode InteractiveServer
 
+@using BlazorWebAssemblyApp.Authentication
 @using Blazored.LocalStorage
-@using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager navManager
 @inject User Service
-@* @inject IAuthService AuthService
-@inject IHttpContextAccessor HttpContextAccessor *@
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@using Microsoft.AspNetCore.Components.Authorization
+
+
+@inject IJSRuntime js
 
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
@@ -46,7 +50,7 @@
 
 @code {
     public LoginDTO login { get; set; } = new();
-    private bool isCorrect = false;
+    private LoginModel isCorrect = new LoginModel();
     private bool IsAuthenticated;
 
 
@@ -56,7 +60,7 @@
         {
             isCorrect = await Service.GetUserAsync(login.Email, login.Password);
 
-            if (isCorrect)
+            if (isCorrect.Email != null)
             {
                 var claims = new List<Claim>
             {
@@ -81,30 +85,35 @@
         }
     }
 
+   
     private async Task onInitNew()
     {
-        var response = await Service.GetUserAsync(login.Email, login.Password);
-        if (response)
+        try
         {
             
-         //   var token = await response.Content.ReadAsStringAsync();
-        var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJncmFtb24wNUBnbWFpbC5jb20ifQ.8toApMr3wEU12iAPI0qg19r_r_sYjI8_Srj1EWHyVuQ";
 
+            var (flag, token, message) = await Service.GetUserAsync3(login.Email, login.Password);
+            if (flag)
+            {
+                
 
-            // Guarda el token JWT en el almacenamiento local
-            await LocalStorage.SetItemAsStringAsync("authToken", token);
-            // Actualiza el estado de autenticación
-            IsAuthenticated = true;
-            // Redirige a la página de inicio
-            NavigationManager.NavigateTo("/Index");
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(token);
+
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                if (authState.User.Identity.IsAuthenticated)
+                {
+                    // El usuario está autenticado, puedes continuar con la navegación
+                    navManager.NavigateTo("/Index", forceLoad: true);
+                }
+               
+            }
+          
         }
-
-
-
-
-
+        catch (Exception ex)
+        {
            
-        
+        }
     }
 
 }

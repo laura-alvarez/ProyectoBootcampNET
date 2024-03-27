@@ -46,9 +46,9 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("CheckUser")]
-        public async Task<bool> CheckUser(string email, string password)
-        {
-            return await _userService.CheckUser(email, password);
+        public async Task<UserResponseModel> CheckUser(string email, string password)
+        { 
+            return await _userService.CheckUser(email, password);        
         }
     }
 }

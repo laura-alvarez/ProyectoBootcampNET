@@ -54,9 +54,18 @@ namespace TaskManager.Application.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> CheckUser(string email, string password)
+        public async Task<UserResponseModel> CheckUser(string email, string password)
         {
-            return _userRepository.CheckUser(email, password);
+            var userEntity = await Task.Run(() => _userRepository.CheckUser(email, password));
+
+            if (userEntity != null)
+            {
+                return _mapper.Map<UserResponseModel>(userEntity);
+            }
+            else
+            {
+                throw new Exception("Datos incorrectos");
+            }           
         }
     }
 }

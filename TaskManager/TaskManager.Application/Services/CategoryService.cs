@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
+using TaskManager.Application.Validations;
 using TaskManager.Domain.Entities;
 using TaskManager.Domain.Repositories;
 
@@ -32,9 +33,14 @@ namespace TaskManager.Application.Services
         }
         public async Task Add(CategoryRequestModel entity)
         {
+            var validationResult = new CategoryValidation().Validate(entity);
+            if (!validationResult.IsValid) {
+                throw new Exception(string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage).ToArray()));
+            } 
             var categoryEntity = _mapper.Map<CategoryEntity>(entity);          
             _categoryRepository.Add(categoryEntity);
             await _categoryRepository.SaveChangesAsync();
+                
         }
 
         public async Task Update(CategoryRequestModel entity, int id)

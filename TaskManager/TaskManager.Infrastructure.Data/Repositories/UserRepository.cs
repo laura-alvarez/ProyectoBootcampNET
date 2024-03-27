@@ -10,9 +10,9 @@ namespace TaskManager.Infrastructure.Data.Repositories
         {
         }
 
-        public bool CheckUser(string email, string password)
+        public UserEntity? CheckUser(string email, string password)
         {            
-           return _context.Set<UserEntity>().Where(user => user.Email == email && user.Password == password).Any();        
+           return _context.Set<UserEntity>().Where(user => user.Email == email && user.Password == password).FirstOrDefault();        
         }
     }
 }

@@ -18,32 +18,7 @@ namespace TaskManager.Client.Data.Services
             _client = client;
         }
 
-        public async Task<IEnumerable<LoginDTO>> GetUserAsync2(string param1, string param2)
-        {
-            string url = $"User/GetAllUsers?param1={param1}&param2={param2}";
-
-            // Realiza la solicitud GET y espera la respuesta
-            var user = await _client.GetFromJsonAsync<IEnumerable<LoginDTO>>(url);
-
-           // var user = await _client.GetFromJsonAsync<IEnumerable<LoginDTO>>("User/GetAllUsers");
-
-            return user;
-        }
-
-        public async Task<LoginModel> GetUserAsync(string param1, string param2)
-        {
-            string url = $"User/CheckUser?email={param1}&password={param2}";
-
-            // Realiza la solicitud GET y espera la respuesta
-            var user = await _client.GetFromJsonAsync<LoginModel>(url);
-
-            
-
-            return user;
-        }
-
-
-        public async Task<LoginResponse> GetUserAsync3(string param1, string param2)
+        public async Task<LoginResponse> GetUserAsync(string param1, string param2)
         {
             
             var url = $"User/CheckUser?email={param1}&password={param2}";
@@ -55,6 +30,42 @@ namespace TaskManager.Client.Data.Services
             var apiResponse = await response.Content.ReadAsStringAsync();
             
             return Generics.DeserializeJsonString<LoginResponse>(apiResponse);
+        }
+
+
+        public async Task<String> CreateUserAsync(string name, string lastName, string email, string password)
+        {
+            var user = new
+            {
+                name,
+                lastName,
+                email,
+                password
+            };
+
+            string url = "User/AddUser";
+
+            try
+            {
+                HttpResponseMessage response = await _client.PostAsJsonAsync(url, user);
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    Console.WriteLine("Usuario creado exitosamente.");
+                    return "ok";
+                }
+                else
+                {
+                    Console.WriteLine($"Error al crear usuario: {response.StatusCode}");
+                    return response.StatusCode.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en la solicitud POST: {ex.Message}");
+                return ex.Message;
+            }
         }
 
     }

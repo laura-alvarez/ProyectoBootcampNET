@@ -31,18 +31,22 @@
 
             <div class="mb-3">
                 <label>Correo</label>
-                <InputText @bind-Value="login.Email" class="form-control" />
+                <InputText @bind-Value="login.Email" class="form-control" placeholder="Intruduce tu correo" />
                 <ValidationMessage For="() => login.Email" />
             </div>
 
             <div class="mb-3">
                 <label>Contraseña</label>
-                <InputText @bind-Value="login.Password" class="form-control" />
+                <InputText @bind-Value="login.Password" type="password" class="form-control" placeholder="Intruduce tu contraseña" />
                 <ValidationMessage For="() => login.Password" />
             </div>
 
             <div style="text-align:center" class="mb-3">
                 <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+            <div style="text-align:center">
+                <p>¿No tienes una cuenta? <NavLink href="/Registrar">Regístrate aquí</NavLink></p>
             </div>
         </div>
     </EditForm>
@@ -53,67 +57,22 @@
     private LoginModel isCorrect = new LoginModel();
     private bool IsAuthenticated;
 
-
-    private async Task onInit()
-    {
-        try
-        {
-            isCorrect = await Service.GetUserAsync(login.Email, login.Password);
-
-            if (isCorrect.Email != null)
-            {
-                var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, login.Email)
-            };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                // Llama a SignInAsync antes de cualquier redirección o respuesta de contenido
-               // await AuthService.SignInAsync(principal);
-                navManager.NavigateTo("/Index");
-            }
-        }
-        catch (Exception ex)
-        {
-            navManager.NavigateTo("/Index");
-            // Registra el error en la consola de depuración
-            Console.WriteLine($"Error en el método onInit(): {ex.Message}");
-            // También puedes registrar el error en un archivo de registro si lo prefieres
-            // logger.LogError($"Error en el método onInit(): {ex}");
-        }
-    }
-
-   
     private async Task onInitNew()
     {
-        try
-        {
-            
 
-            var (flag, token, message) = await Service.GetUserAsync3(login.Email, login.Password);
+            var (flag, token, message) = await Service.GetUserAsync(login.Email, login.Password);
             if (flag)
             {
-                
-
                 var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
                 await customAuthStateProvider.UpdateAuthenticationState(token);
 
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
                 if (authState.User.Identity.IsAuthenticated)
                 {
-                    // El usuario está autenticado, puedes continuar con la navegación
                     navManager.NavigateTo("/Index", forceLoad: true);
-                }
-               
-            }
-          
-        }
-        catch (Exception ex)
-        {
-           
-        }
+                }  
+            }       
+        
     }
 
 }

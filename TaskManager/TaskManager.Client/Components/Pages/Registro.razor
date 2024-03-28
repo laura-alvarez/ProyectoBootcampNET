@@ -1,0 +1,87 @@
+﻿@page "/Registrar"
+
+@layout Layout.LoginLayout
+@rendermode InteractiveServer
+@inject NavigationManager navManager
+@inject User Service
+
+<div id="registroModal" class="row mt-5">
+<EditForm Model="@usuario" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="fondo col-lg-4 offset-lg-4 border">
+            @* <div class="mb-3">
+                <label>Correo</label>
+                <InputText @bind-Value="login.Email" class="form-control" />
+                <ValidationMessage For="() => login.Email" />
+            </div> *@
+            <div class="mb-3">
+            <label for="Nombre">Nombre:</label>
+                <InputText id="Nombre" @bind-Value="usuario.Nombre" class="form-control" placeholder="Intruduce tu nombre" />
+            <ValidationMessage For="@(() => usuario.Nombre)" />
+        </div>
+
+            <div class="mb-3">
+            <label for="Apellidos">Apellidos:</label>
+                <InputText id="Apellidos" @bind-Value="usuario.Apellidos" class="form-control" placeholder="Intruduce tus apellidos" />
+            <ValidationMessage For="@(() => usuario.Apellidos)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Email">Correo:</label>
+                <InputText id="Email" @bind-Value="usuario.Email" class="form-control" placeholder="Intruduce tu correo" />
+            <ValidationMessage For="@(() => usuario.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Password">Contraseña:</label>
+                <InputText id="Password" @bind-Value="usuario.Password" type="password" class="form-control" placeholder="Intruduce tu contraseña" />
+            <ValidationMessage For="@(() => usuario.Password)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="ConfirmPassword">Confirmar Contraseña:</label>
+                <InputText id="ConfirmPassword" @bind-Value="usuario.ConfirmPassword" type="password" class="form-control" placeholder="Repite tu contraseña" />
+            <ValidationMessage For="@(() => usuario.ConfirmPassword)" />
+        </div>
+
+            <div style="text-align:center" class="mb-3">
+                <button  @onclick="CancelarRegistro" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+
+          
+    </div>
+</EditForm>
+</div>
+@code {
+    private Usuario usuario = new Usuario();
+
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var response = await Service.CreateUserAsync(usuario.Nombre, usuario.Apellidos, usuario.Email, usuario.Password);
+
+            if (response == "ok")
+            {
+              
+            
+                navManager.NavigateTo("/Index");
+            }
+        }
+        catch (Exception)
+        {
+            navManager.NavigateTo("/");
+            
+        }
+    }
+
+    private void CancelarRegistro()
+    {
+        navManager.NavigateTo("/");
+    }
+
+   
+}

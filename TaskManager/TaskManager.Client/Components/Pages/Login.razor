@@ -1,0 +1,78 @@
+﻿@page "/"
+
+@layout Layout.LoginLayout
+@rendermode InteractiveServer
+
+@using BlazorWebAssemblyApp.Authentication
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager navManager
+@inject User Service
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@using Microsoft.AspNetCore.Components.Authorization
+
+
+@inject IJSRuntime js
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+
+<div id="loginModal" class="row mt-5">
+    <h1 style="text-align:center">Gestor de tareas</h1>
+    <EditForm Model="@login" OnValidSubmit="onInitNew" FormName="LoginForm">
+        <DataAnnotationsValidator />
+
+        <div class="fondo col-lg-4 offset-lg-4 border">
+            <div class="mb-3 text-center">
+                <h3>LOGIN</h3>
+            </div>
+
+            <div class="mb-3">
+                <label>Correo</label>
+                <InputText @bind-Value="login.Email" class="form-control" placeholder="Intruduce tu correo" />
+                <ValidationMessage For="() => login.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label>Contraseña</label>
+                <InputText @bind-Value="login.Password" type="password" class="form-control" placeholder="Intruduce tu contraseña" />
+                <ValidationMessage For="() => login.Password" />
+            </div>
+
+            <div style="text-align:center" class="mb-3">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+            <div style="text-align:center">
+                <p>¿No tienes una cuenta? <NavLink href="/Registrar">Regístrate aquí</NavLink></p>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    public LoginDTO login { get; set; } = new();
+    private LoginModel isCorrect = new LoginModel();
+    private bool IsAuthenticated;
+
+    private async Task onInitNew()
+    {
+
+            var (flag, token, message) = await Service.GetUserAsync(login.Email, login.Password);
+            if (flag)
+            {
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(token);
+
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                if (authState.User.Identity.IsAuthenticated)
+                {
+                    navManager.NavigateTo("/Index", forceLoad: true);
+                }  
+            }       
+        
+    }
+
+}

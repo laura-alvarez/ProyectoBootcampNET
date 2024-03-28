@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Application.Models.Users;
+using static TaskManager.Client.Data.Dtos.ServiceResponses;
 
 namespace TaskManager.Application.Services.Interfaces
 {
@@ -14,6 +15,6 @@ namespace TaskManager.Application.Services.Interfaces
         Task Add(UserRequestModel entity);
         Task Update(UserRequestModel entity, int id);
         Task Delete(int id);
-        Task<UserResponseModel> CheckUser(string email, string password);
+        Task<LoginResponse> CheckUser(string email, string password);
     }
 }

@@ -2,10 +2,11 @@
 
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Components.Authorization;
+@using TaskManager.Client.Components.Templates;
 @* @attribute [Authorize] *@
-
+@rendermode InteractiveServer
 <PageTitle>Index</PageTitle>
-
+<TableTaks></TableTaks>
 <h1>Hello, world!</h1>
 
 Welcome to your new app.

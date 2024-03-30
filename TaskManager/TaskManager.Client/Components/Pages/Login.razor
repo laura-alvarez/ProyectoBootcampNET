@@ -11,6 +11,7 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 @using Microsoft.AspNetCore.Components.Authorization
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
 
 
 @inject IJSRuntime js
@@ -63,6 +64,7 @@
             var (flag, token, message) = await Service.GetUserAsync(login.Email, login.Password);
             if (flag)
             {
+                await localStorage.SignInAsync("UserId", message);
                 var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
                 await customAuthStateProvider.UpdateAuthenticationState(token);
 

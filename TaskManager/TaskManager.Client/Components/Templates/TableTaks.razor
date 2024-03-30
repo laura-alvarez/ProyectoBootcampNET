@@ -1,0 +1,99 @@
+﻿@* TablaTareas.razor *@
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JSRuntime
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Columna 1</th>
+            <th>Columna 2</th>
+            <th>Columna 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Tareas)
+        {
+            <tr>
+                <td>@tarea.Columna1</td>
+                <td>@tarea.Columna2</td>
+                <td>@tarea.Columna3</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button @onclick="MostrarModal" class="btn btn-primary">Agregar Tarea</button>
+
+@if (MostrandoModal)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display:block">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Tarea</h5>
+                    <button type="button" class="close" @onclick="CancelarRegistro">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@usuario" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <InputText @bind-Value="usuario.Nombre" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos:</label>
+                            <InputText @bind-Value="usuario.Apellidos" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <InputText @bind-Value="usuario.Email" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public class Tarea
+    {
+        public string Columna1 { get; set; }
+        public string Columna2 { get; set; }
+        public string Columna3 { get; set; }
+    }
+
+   
+
+    List<Tarea> Tareas = new List<Tarea> {
+        new Tarea { Columna1 = "Tarea 1", Columna2 = "Descripción de la tarea 1", Columna3 = "Responsable 1" },
+        new Tarea { Columna1 = "Tarea 2", Columna2 = "Descripción de la tarea 2", Columna3 = "Responsable 2" },
+        new Tarea { Columna1 = "Tarea 3", Columna2 = "Descripción de la tarea 3", Columna3 = "Responsable 3" }
+    };
+
+    Usuario usuario = new Usuario();
+
+    bool MostrandoModal = false;
+
+    void MostrarModal()
+    {
+        MostrandoModal = true;
+    }
+
+    void HandleValidSubmit()
+    {
+        Tareas.Add(new Tarea { Columna1 = usuario.Nombre, Columna2 = usuario.Apellidos, Columna3 = usuario.Email });
+        CancelarRegistro();
+    }
+
+    void CancelarRegistro()
+    {
+        usuario = new Usuario();
+        MostrandoModal = false;
+    }
+}

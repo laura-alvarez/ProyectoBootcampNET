@@ -22,6 +22,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<TaskManager.Client.Extensiones.LocalStorage>();
 
 builder.Services.AddAuthentication(options =>
 {

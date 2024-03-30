@@ -4,6 +4,8 @@
 @rendermode InteractiveServer
 @inject NavigationManager navManager
 @inject User Service
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
+
 
 <div id="registroModal" class="row mt-5">
 <EditForm Model="@usuario" OnValidSubmit="@HandleValidSubmit">
@@ -67,7 +69,7 @@
             if (response == "ok")
             {
               
-            
+                await localStorage.SignInAsync("UserId", "2");
                 navManager.NavigateTo("/Index");
             }
         }

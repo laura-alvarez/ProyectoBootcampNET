@@ -76,7 +76,7 @@ namespace TaskManager.Application.Services
                 string hexKey = ByteArrayToHexString(key);
                 var jwtService = new JWTGenerator("ab1b3089779b50d1b9bb03c3e15be7a0", "tarea", "tarea");
                 string token = jwtService.GenerateToken(user.Name, user.Email);
-                return new LoginResponse(true, token!, "Login completed");
+                return new LoginResponse(true, token!, user.Id.ToString());
                 
             }
             else

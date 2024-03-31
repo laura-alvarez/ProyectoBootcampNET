@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using System.Reflection;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,11 +76,23 @@ builder.Services.AddAuthentication(options =>
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskManager API", Version = "v1" });
+    //Documentación general API
+    opt.SwaggerDoc("v1", new OpenApiInfo { 
+        Title = "TaskManager API", 
+        Description = "Proyecto final del bootcamp de aplicaciones web en .NET de Codigo Facilito",
+        Version = "v1",
+        Contact = new OpenApiContact
+        {
+            Name = "Laura Alvarez y Ramón Rodriguez",
+            Url = new Uri("https://github.com/laura-alvarez/ProyectoBootcampNET")
+        }        
+    });
+
+    //Autenticación para probar JWT
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter token",
+        Description = "Por favor introduzca el bearer token generado con el método CheckUser",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
@@ -100,6 +113,11 @@ builder.Services.AddSwaggerGen(opt =>
             new string[]{}
         }
     });
+
+    //Documentación de la API
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+    opt.IncludeXmlComments(xmlCommentsFullPath);
 });
 
 
@@ -112,7 +130,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(setupAction =>
+    {
+        //setupAction.RoutePrefix = String.Empty;
+        setupAction.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+        setupAction.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
+        setupAction.DisplayRequestDuration();
+        setupAction.EnableFilter();
+    });
 }
 
 app.UseHttpsRedirection();

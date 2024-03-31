@@ -9,6 +9,7 @@ namespace TaskManager.Domain.Repositories
 {
     public interface ITaskRepository : IGenericRepository<TaskEntity>
     {
-        Task<List<TaskEntity>> GetAllByUserIdAsync(int idUser);
+        Task<IEnumerable<TaskEntity>> GetAll();
+        Task<IEnumerable<TaskEntity>> GetAllByUserIdAsync(int idUser);
     }
 }

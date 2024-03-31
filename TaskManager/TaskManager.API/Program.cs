@@ -11,25 +11,28 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
-/*try
-{
-    string? conecte = builder.Configuration.GetConnectionString("DefaultConnection");
-    using (Microsoft.Data.SqlClient.SqlConnection connection = new Microsoft.Data.SqlClient.SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")))
-    {
-        connection.Open();
-        Console.WriteLine("Conexión exitosa.");
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine("Error al conectar a la base de datos: " + ex.Message);
-}*/
+
+//Logs
+builder.Host.UseSerilog();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.File("Logs\\log.txt")
+    .WriteTo.Console()
+    .CreateLogger();
+
+
 // Add services to the container.
 // Connection to the SQL Server Database
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RamonConnection")));
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LauraConnection")));
 
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidation>();
@@ -117,8 +120,9 @@ app.UseHttpsRedirection();
 app.UseCors(builder => builder
 .AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.MapControllers();
 

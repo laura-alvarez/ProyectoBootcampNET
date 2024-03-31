@@ -11,7 +11,9 @@ namespace TaskManager.Application.Profiles
             CreateMap<UserEntity, UserResponseModel>();
             CreateMap<UserRequestModel, UserEntity>();
 
-            CreateMap<TaskEntity, TaskResponseModel>();
+            CreateMap<TaskEntity, TaskResponseModel>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Category))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State.State)); 
             CreateMap<TaskRequestModel, TaskEntity>();
 
             CreateMap<CategoryEntity, CategoryResponseModel>();

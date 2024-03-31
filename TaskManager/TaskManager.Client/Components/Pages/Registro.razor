@@ -1,10 +1,12 @@
 ﻿@page "/Registrar"
+@using BlazorWebAssemblyApp.Authentication
 
 @layout Layout.LoginLayout
 @rendermode InteractiveServer
 @inject NavigationManager navManager
 @inject User Service
 @inject TaskManager.Client.Extensiones.LocalStorage localStorage
+@inject AuthenticationStateProvider AuthStateProvider
 
 
 <div id="registroModal" class="row mt-5">
@@ -69,8 +71,19 @@
             if (response == "ok")
             {
               
-                await localStorage.SignInAsync("UserId", "2");
-                navManager.NavigateTo("/Index");
+                var (flag, token, message) = await Service.GetUserAsync(usuario.Email, usuario.Password);
+                if (flag)
+                {
+                    await localStorage.SignInAsync("UserId", message);
+                    var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                    await customAuthStateProvider.UpdateAuthenticationState(token);
+
+                    var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                    if (authState.User.Identity.IsAuthenticated)
+                    {
+                        navManager.NavigateTo("/Index", forceLoad: true);
+                    }
+                }
             }
         }
         catch (Exception)

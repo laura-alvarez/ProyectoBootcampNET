@@ -10,10 +10,12 @@ namespace TaskManager.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpGet("GetAllUsers")]
@@ -29,27 +31,32 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpPost("AddUser")]
-        public async Task AddTask(UserRequestModel user)
+        public async Task AddUser(UserRequestModel user)
         {
+            _logger.LogInformation("UserController: AddUser - " + " user added");
             await _userService.Add(user);
         }
 
         [HttpPut("UpdateUser")]
         public async Task UpdateUser(UserRequestModel user, int idUser)
         {
+            _logger.LogInformation("UserController: UpdateUser - " + " user id " + idUser + " updated");
             await _userService.Update(user, idUser);
         }
 
         [HttpDelete("DeleteUser")]
         public async Task DeleteUser(int idUser)
         {
+            _logger.LogInformation("UserController: DeleteUser - " + " user id " + idUser + " deleted");
             await _userService.Delete(idUser);
         }
 
         [HttpGet("CheckUser")]
         public async Task<LoginResponse> CheckUser(string email, string password)
-        { 
-            return await _userService.CheckUser(email, password);        
+        {
+            var result = await _userService.CheckUser(email, password);
+            _logger.LogInformation("UserController: CheckUser - " + email + "- Result:"+(result.Flag?" Check succesful":"Check failled"));
+            return result;
         }
     }
 }

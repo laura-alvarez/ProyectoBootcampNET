@@ -19,8 +19,7 @@ namespace TaskManager.Application.Services
 
         public async Task<IEnumerable<TaskResponseModel>> GetAll()
         {
-            var taskEntity = await _taskRepository.GetAllAsync();
-
+            var taskEntity = await _taskRepository.GetAll();  
             return _mapper.Map<IEnumerable<TaskResponseModel>>(taskEntity); ;
         }
 
@@ -34,7 +33,7 @@ namespace TaskManager.Application.Services
         public async Task<TaskResponseModel> GetById(int id)
         {
             var taskEntity = await Task.Run(() => _taskRepository.GetByIdSync(id));
-
+            
             return _mapper.Map<TaskResponseModel>(taskEntity);
         }
 

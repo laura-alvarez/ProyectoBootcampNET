@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<User>();
+builder.Services.AddScoped<TaskType>();
 HttpClient client = new();
 client.BaseAddress = new("https://localhost:7184");
 builder.Services.AddSingleton(client);

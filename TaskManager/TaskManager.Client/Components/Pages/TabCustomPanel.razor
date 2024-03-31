@@ -1,0 +1,40 @@
+﻿<div class="tab">
+    @foreach (var tab in Tabs)
+    {
+        <button @onclick="() => SelectTab(tab)" class="@($"{(tab == SelectedTab ? "active" : "")}")">@tab.Title</button>
+    }
+</div>
+
+<div class="tab-content">
+    @if (SelectedTab != null)
+    {
+        @SelectedTab.Content
+    }
+    @ChildContent <!-- Agrega esto para permitir contenido secundario -->
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public class Tab
+    {
+        public string Title { get; set; }
+        public RenderFragment Content { get; set; }
+    }
+
+    [Parameter]
+    public List<Tab> Tabs { get; set; }
+
+    private Tab SelectedTab { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SelectedTab = Tabs.FirstOrDefault();
+    }
+
+    private void SelectTab(Tab tab)
+    {
+        SelectedTab = tab;
+    }
+}

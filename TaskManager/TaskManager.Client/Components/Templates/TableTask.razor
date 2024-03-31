@@ -1,0 +1,261 @@
+﻿@page "/TablaTareas"
+@using System.Collections.Generic
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components.Forms
+@using static TaskManager.Client.Data.Dtos.ServiceResponses
+@inject TaskType Service
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
+
+<div class="container">
+    <button @onclick="MostrarModal" class="btn btn-primary text-center">Agregar Tarea</button>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th class="descripcion-header">Descripción</th>
+                <th>Tipo tarea</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarea in Tareas)
+            {
+                <tr>
+                    <td>@tarea.Titulo</td>
+                    <td class="descripcion-header" title="@tarea.Descripcion">@TruncateDescription(tarea.Descripcion)</td>
+                    <td>@tarea.Tipo</td>
+                    <td>
+                        <button @onclick="() => MostrarEdicion(tarea)" class="btn btn-info">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </button>
+                        <button @onclick="() => EliminarTarea(tarea)" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    
+
+    <div class="modal" tabindex="-1" role="dialog" style="@($"display: {(MostrandoModal ? "block" : "none")}")">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align:center">
+                    <h5 class="modal-title">Agregar Tarea</h5>
+
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@newTask" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label>Título:</label>
+                            <InputText @bind-Value="newTask.Titulo" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <InputText @bind-Value="newTask.Descripcion" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo Tarea:</label>
+                            <select @bind="newTask.Tipo" class="form-control">
+                                @foreach (var tipoTarea in TiposTarea)
+                                {
+                                    <option value="@tipoTarea.Id">@tipoTarea.Category</option>
+                                }
+                            </select>
+                        </div>
+                        <div style="text-align:center;margin-top:10px">
+                            <button type="button" class="btn btn-danger" @onclick="CancelarRegistro">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">@BtnText</button>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (MostrandoModal)
+    {
+        <div class="modal-background"></div> <!-- Capa de fondo gris -->
+    }
+
+</div>
+
+<style>
+    .descripcion-header {
+        max-width: 400px !important; /* Ancho máximo para la columna Descripción */
+        overflow: hidden; /* Oculta el texto que excede el ancho máximo */
+        text-overflow: ellipsis; /* Agrega puntos suspensivos si el texto excede el ancho máximo */
+    }
+
+    .modal-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* color de fondo gris semi-transparente */
+        z-index: 999; /* asegura que la capa esté por encima de otros elementos */
+    }
+</style>
+
+@code {
+
+    [Parameter]
+    public string? Estado { get; set; }
+
+    List<TaskDTO> Tareas = new List<TaskDTO>();
+    List<TaskTypeResponse> TiposTarea = new List<TaskTypeResponse>();
+    TaskDTO newTask = new TaskDTO();
+    TaskDTO tareaSeleccionada = new TaskDTO();
+    bool MostrandoModal = false;
+    bool DatosCargados = false;
+    string UserId = "";
+    string BtnText = "Guardar";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!DatosCargados)
+        {
+            try
+            {
+                UserId = await localStorage.GetUserIdAsync("UserId");
+                Tareas = await GetAllTaskByUser(UserId);
+                TiposTarea = await GetAllCategories();
+                if (TiposTarea.Any())
+                {
+                    newTask.Tipo = TiposTarea.First().Id.ToString();
+                }
+                DatosCargados = true;
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción aquí
+                Console.WriteLine($"Error al obtener el ID de usuario: {ex.Message}");
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && DatosCargados)
+        {
+            Tareas = await GetAllTaskByUser(UserId);
+            StateHasChanged();
+        }
+    }
+
+    protected async Task<List<TaskDTO>> GetAllTaskByUser(string userId)
+    {
+        int status = 1;
+
+        if (Estado == "EN PROCESO")
+        {
+            status = 2;
+        }
+        else if (Estado == "FINALIZADAS")
+        {
+            status = 3;
+        }
+
+
+        var response = await Service.GetAllTaskByUserID(userId);
+
+        response = response.Where(e => e.StateID == status).ToList();
+        List<TaskDTO> tareas = new List<TaskDTO>();
+        foreach (TaskResponse t in response)
+        {
+            TaskDTO newTask = new TaskDTO();
+            newTask.Titulo = t.TaskName;
+            newTask.Descripcion = t.TaskDescription;
+            newTask.Tipo = t.CategoryID.ToString();
+
+            tareas.Add(newTask);
+        }
+
+
+        return tareas;
+    }
+
+    private async Task<List<TaskTypeResponse>> GetAllCategories()
+    {
+        List<TaskTypeResponse> n = await Service.GetTaskTypeAsync();
+
+        return n;
+    }
+
+    void MostrarModal()
+    {
+        MostrandoModal = true;
+        BtnText = "Guardar";
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (BtnText == "Guardar")
+        {
+            string userID = await localStorage.GetUserIdAsync("UserId");
+            var response = await Service.CreateTaskAsync(newTask.Titulo, newTask.Descripcion, Int32.Parse(userID), Int32.Parse(newTask.Tipo), 1);
+            UserId = await localStorage.GetUserIdAsync("UserId");
+            Tareas = await GetAllTaskByUser(UserId);
+        }
+        else
+        {
+            // Aquí deberías implementar la lógica de actualización de la tarea
+        }
+
+        CancelarRegistro();
+    }
+
+    void CancelarRegistro()
+    {
+        newTask = new TaskDTO();
+        MostrandoModal = false;
+    }
+
+    void MostrarEdicion(TaskDTO tarea)
+    {
+        tareaSeleccionada = tarea;
+        newTask = tarea; // Rellena los campos con los datos de la tarea seleccionada
+        MostrandoModal = true;
+        BtnText = "Actualizar"; // Cambia el texto del botón a "Actualizar"
+    }
+
+    void CancelarEdicion()
+    {
+        tareaSeleccionada = new TaskDTO();
+        MostrandoModal = false;
+    }
+
+    async Task EditarTarea()
+    {
+        // Lógica para editar la tarea
+        await Task.Delay(0); // Esta función debe ser reemplazada por la lógica real de edición
+        CancelarEdicion(); // Cierra el modal de edición
+    }
+
+    void EliminarTarea(TaskDTO tarea)
+    {
+        // Lógica para eliminar la tarea
+        Tareas.Remove(tarea);
+    }
+
+    string TruncateDescription(string description)
+    {
+        if (description.Length > 100)
+        {
+            return description.Substring(0, 125) + "...";
+        }
+        else
+        {
+            return description;
+        }
+    }
+}

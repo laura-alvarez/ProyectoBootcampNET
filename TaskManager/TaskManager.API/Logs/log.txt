@@ -43,3 +43,78 @@
 2024-04-01 13:04:19.716 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7184/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 145.3252ms
 2024-04-01 13:04:20.001 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7184/_vs/browserLink - null null
 2024-04-01 13:04:20.021 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7184/_vs/browserLink - 200 null text/javascript; charset=UTF-8 20.091ms
+2024-04-01 17:17:07.802 +02:00 [INF] Executed DbCommand (368ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [TaskManager];
+2024-04-01 17:17:07.975 +02:00 [INF] Executed DbCommand (155ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [TaskManager] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2024-04-01 17:17:08.204 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2024-04-01 17:17:08.322 +02:00 [INF] Executed DbCommand (54ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2024-04-01 17:17:08.372 +02:00 [INF] Executed DbCommand (46ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2024-04-01 17:17:08.428 +02:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2024-04-01 17:17:08.478 +02:00 [INF] Executed DbCommand (44ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2024-04-01 17:17:08.493 +02:00 [INF] Applying migration '20240324192107_InitialMigration'.
+2024-04-01 17:17:08.615 +02:00 [INF] Executed DbCommand (43ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Category] (
+    [Id] int NOT NULL IDENTITY,
+    [Category] nvarchar(max) NOT NULL,
+    [IsDelete] bit NOT NULL,
+    CONSTRAINT [PK_Category] PRIMARY KEY ([Id])
+);
+2024-04-01 17:17:08.664 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [State] (
+    [Id] int NOT NULL IDENTITY,
+    [State] nvarchar(max) NOT NULL,
+    [IsDelete] bit NOT NULL,
+    CONSTRAINT [PK_State] PRIMARY KEY ([Id])
+);
+2024-04-01 17:17:08.711 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [User] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [LastName] nvarchar(max) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [Password] nvarchar(max) NOT NULL,
+    [IsDelete] bit NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_User] PRIMARY KEY ([Id])
+);
+2024-04-01 17:17:08.759 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Task] (
+    [Id] int NOT NULL IDENTITY,
+    [TaskName] nvarchar(max) NOT NULL,
+    [TaskDescription] nvarchar(max) NOT NULL,
+    [UserId] int NOT NULL,
+    [CategoryId] int NOT NULL,
+    [StateId] int NOT NULL,
+    [IsDelete] bit NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_Task] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Task_Category_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Category] ([Id]),
+    CONSTRAINT [FK_Task_State_StateId] FOREIGN KEY ([StateId]) REFERENCES [State] ([Id]),
+    CONSTRAINT [FK_Task_User_UserId] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id])
+);
+2024-04-01 17:17:08.807 +02:00 [INF] Executed DbCommand (46ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Task_CategoryId] ON [Task] ([CategoryId]);
+2024-04-01 17:17:08.854 +02:00 [INF] Executed DbCommand (42ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Task_StateId] ON [Task] ([StateId]);
+2024-04-01 17:17:08.898 +02:00 [INF] Executed DbCommand (42ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Task_UserId] ON [Task] ([UserId]);
+2024-04-01 17:17:08.943 +02:00 [INF] Executed DbCommand (43ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240324192107_InitialMigration', N'8.0.3');

@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using BlazorWebAssemblyApp.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +10,6 @@ using TaskManager.Client.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -19,8 +19,9 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStat
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7184/") });
 
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<TaskManager.Client.Extensiones.LocalStorage>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -42,6 +43,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<User>();
+builder.Services.AddScoped<TaskType>();
 HttpClient client = new();
 client.BaseAddress = new("https://localhost:7184");
 builder.Services.AddSingleton(client);
@@ -53,12 +55,9 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-
-//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

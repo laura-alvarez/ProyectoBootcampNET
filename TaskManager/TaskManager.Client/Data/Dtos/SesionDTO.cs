@@ -10,6 +10,6 @@ namespace TaskManager.Client.Data.Dtos
     {
         public required string Nombre { get; set; }
         public required string Correo { get; set; }
-        //public bool Rol { get; set; }
+       
     }
 }

@@ -1,20 +1,19 @@
 ﻿@page "/Registrar"
+@using BlazorWebAssemblyApp.Authentication
 
 @layout Layout.LoginLayout
 @rendermode InteractiveServer
 @inject NavigationManager navManager
 @inject User Service
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
+@inject AuthenticationStateProvider AuthStateProvider
+
 
 <div id="registroModal" class="row mt-5">
 <EditForm Model="@usuario" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
 
     <div class="fondo col-lg-4 offset-lg-4 border">
-            @* <div class="mb-3">
-                <label>Correo</label>
-                <InputText @bind-Value="login.Email" class="form-control" />
-                <ValidationMessage For="() => login.Email" />
-            </div> *@
             <div class="mb-3">
             <label for="Nombre">Nombre:</label>
                 <InputText id="Nombre" @bind-Value="usuario.Nombre" class="form-control" placeholder="Intruduce tu nombre" />
@@ -48,15 +47,14 @@
             <div style="text-align:center" class="mb-3">
                 <button  @onclick="CancelarRegistro" class="btn btn-secondary">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Registrar</button>
-            </div>
-
-          
+            </div> 
     </div>
 </EditForm>
 </div>
+
+
 @code {
     private Usuario usuario = new Usuario();
-
 
     private async Task HandleValidSubmit()
     {
@@ -66,9 +64,19 @@
 
             if (response == "ok")
             {
-              
-            
-                navManager.NavigateTo("/Index");
+                var (flag, token, message) = await Service.CheckUserAsync(usuario.Email, usuario.Password);
+                if (flag)
+                {
+                    await localStorage.SignInAsync("UserId", message);
+                    var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                    await customAuthStateProvider.UpdateAuthenticationState(token);
+
+                    var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                    if (authState.User.Identity.IsAuthenticated)
+                    {
+                        navManager.NavigateTo("/Index", forceLoad: true);
+                    }
+                }
             }
         }
         catch (Exception)
@@ -82,6 +90,5 @@
     {
         navManager.NavigateTo("/");
     }
-
    
 }

@@ -32,8 +32,7 @@ Log.Logger = new LoggerConfiguration()
 // Add services to the container.
 // Connection to the SQL Server Database
 //builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-//builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RamonConnection")));
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ProduccionConnection")));
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RamonConnection")));
 //builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LauraConnection")));
 
 builder.Services.AddFluentValidationClientsideAdapters();

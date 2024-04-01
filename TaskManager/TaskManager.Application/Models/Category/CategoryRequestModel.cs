@@ -9,9 +9,6 @@ namespace TaskManager.Application.Models.Users
 {
     public class CategoryRequestModel
     {
-        /// <summary>
-        /// Nombre de la categoría
-        /// </summary>
         public string Category { get; set; }        
 
     }

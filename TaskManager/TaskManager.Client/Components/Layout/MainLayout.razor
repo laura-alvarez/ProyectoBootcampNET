@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorWebAssemblyApp.Authentication
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager navManager
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
+
 
 <div class="page">
     <div class="sidebar">
@@ -7,16 +12,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="/" target="_blank">Cerrar Sesión</a>
-           @*  <AuthorizeView>
-                <NotAuthorized>
-                    <a href="/">Login</a>
-                </NotAuthorized>
-                <Authorized>
-                    <a href="/Index">Logout</a>
-                </Authorized>
-            </AuthorizeView> *@
-            
+            <a href="/">Cerrar Sesión</a>          
         </div>
 
         <article class="content px-4">

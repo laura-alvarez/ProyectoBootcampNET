@@ -58,6 +58,18 @@
     private LoginModel isCorrect = new LoginModel();
     private bool IsAuthenticated;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(null);
+            await localStorage.RemoveItemAsync("UserId");
+        }
+    }
+
+
+
     private async Task onInitNew()
     {
 

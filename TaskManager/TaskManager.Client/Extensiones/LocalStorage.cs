@@ -20,6 +20,11 @@
         {
             return await _localStorage.GetItemAsync<string>(key);
         }
+
+        public async Task RemoveItemAsync(string key)
+        {
+            await _localStorage.RemoveItemAsync(key);
+        }
     }
 
 }

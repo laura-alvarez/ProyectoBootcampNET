@@ -14,11 +14,6 @@
     <DataAnnotationsValidator />
 
     <div class="fondo col-lg-4 offset-lg-4 border">
-            @* <div class="mb-3">
-                <label>Correo</label>
-                <InputText @bind-Value="login.Email" class="form-control" />
-                <ValidationMessage For="() => login.Email" />
-            </div> *@
             <div class="mb-3">
             <label for="Nombre">Nombre:</label>
                 <InputText id="Nombre" @bind-Value="usuario.Nombre" class="form-control" placeholder="Intruduce tu nombre" />
@@ -52,15 +47,14 @@
             <div style="text-align:center" class="mb-3">
                 <button  @onclick="CancelarRegistro" class="btn btn-secondary">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Registrar</button>
-            </div>
-
-          
+            </div> 
     </div>
 </EditForm>
 </div>
+
+
 @code {
     private Usuario usuario = new Usuario();
-
 
     private async Task HandleValidSubmit()
     {
@@ -70,7 +64,6 @@
 
             if (response == "ok")
             {
-              
                 var (flag, token, message) = await Service.GetUserAsync(usuario.Email, usuario.Password);
                 if (flag)
                 {
@@ -97,6 +90,5 @@
     {
         navManager.NavigateTo("/");
     }
-
    
 }

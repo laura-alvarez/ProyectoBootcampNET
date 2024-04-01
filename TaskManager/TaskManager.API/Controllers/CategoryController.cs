@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
 
@@ -6,6 +7,7 @@ namespace TaskManager.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

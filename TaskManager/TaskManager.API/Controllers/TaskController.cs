@@ -12,7 +12,6 @@ namespace TaskManager.API.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    [Produces("application/json")]
     [Authorize]
     public class TaskController : ControllerBase
     {

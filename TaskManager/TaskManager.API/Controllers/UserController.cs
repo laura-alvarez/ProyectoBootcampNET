@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
@@ -19,12 +20,14 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("GetAllUsers")]
+        [Authorize]
         public Task<IEnumerable<UserResponseModel>> GetAllUsers()
         {
            return _userService.GetAll();
         }
 
         [HttpGet("GetUser")]
+        [Authorize]
         public Task<UserResponseModel> GetUser(int idUser)
         {
             return _userService.GetById(idUser);
@@ -38,6 +41,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpPut("UpdateUser")]
+        [Authorize]
         public async Task UpdateUser(UserRequestModel user, int idUser)
         {
             _logger.LogInformation("UserController: UpdateUser - " + " user id " + idUser + " updated");
@@ -45,6 +49,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpDelete("DeleteUser")]
+        [Authorize]
         public async Task DeleteUser(int idUser)
         {
             _logger.LogInformation("UserController: DeleteUser - " + " user id " + idUser + " deleted");

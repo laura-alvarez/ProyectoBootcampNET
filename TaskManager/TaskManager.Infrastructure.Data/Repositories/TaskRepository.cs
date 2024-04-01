@@ -16,7 +16,7 @@ namespace TaskManager.Infrastructure.Data.Repositories
         }
         public async Task<IEnumerable<TaskEntity>> GetAllByUserIdAsync(int idUser)
         {
-           return await Task.Run(() => _context.Set<TaskEntity>().Include(t => t.Category).Include(t => t.State).Where(task => task.UserId == idUser).ToList());
+           return await Task.Run(() => _context.Set<TaskEntity>().Include(t => t.Category).Include(t => t.State).Where(task => task.UserId == idUser && !task.IsDelete).ToList());
            
         }
 

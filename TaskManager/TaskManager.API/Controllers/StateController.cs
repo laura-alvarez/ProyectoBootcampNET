@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Models.Users;
 using TaskManager.Application.Services.Interfaces;
 
@@ -6,6 +7,7 @@ namespace TaskManager.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class StateController : ControllerBase
     {
         private readonly IStateService _stateService;
@@ -15,6 +17,10 @@ namespace TaskManager.API.Controllers
             _stateService = stateService;
         }
 
+        /// <summary>
+        /// Obtiene todos los estados
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAllStates")]
         public Task<IEnumerable<StateResponseModel>> GetAllStates() { 
             return _stateService.GetAll();

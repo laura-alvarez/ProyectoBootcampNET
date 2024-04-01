@@ -64,7 +64,7 @@
 
             if (response == "ok")
             {
-                var (flag, token, message) = await Service.GetUserAsync(usuario.Email, usuario.Password);
+                var (flag, token, message) = await Service.CheckUserAsync(usuario.Email, usuario.Password);
                 if (flag)
                 {
                     await localStorage.SignInAsync("UserId", message);

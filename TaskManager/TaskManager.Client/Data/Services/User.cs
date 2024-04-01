@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Intuit.Ipp.Core.Configuration;
+using Intuit.Ipp.Data;
 using SharedClassLibrary.GenericModels;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -18,7 +19,7 @@ namespace TaskManager.Client.Data.Services
             _client = client;
         }
 
-        public async Task<LoginResponse> GetUserAsync(string param1, string param2)
+        public async Task<LoginResponse> CheckUserAsync(string param1, string param2)
         {
             
             var url = $"User/CheckUser?email={param1}&password={param2}";
@@ -30,6 +31,21 @@ namespace TaskManager.Client.Data.Services
             var apiResponse = await response.Content.ReadAsStringAsync();
             
             return Generics.DeserializeJsonString<LoginResponse>(apiResponse);
+        }
+
+        public async Task<UserResponse> GetUserAsync(string userID)
+        {
+
+            var url = $"User/GetUser?idUser={userID}";
+            var response = await _client.GetAsync(url);
+
+            
+            if (!response.IsSuccessStatusCode)
+                return new UserResponse(0, "", "", "", "");
+
+            var apiResponse = await response.Content.ReadAsStringAsync();
+
+            return Generics.DeserializeJsonString<UserResponse>(apiResponse);
         }
 
 
@@ -68,6 +84,41 @@ namespace TaskManager.Client.Data.Services
             }
         }
 
+
+        public async Task<String> UpdateUserAsync(string name, string lastName, string email, string password, string userID)
+        {
+            var user = new
+            {
+                name,
+                lastName,
+                email,
+                password
+            };
+
+            string url = $"User/UpdateUser?idUser={userID}";;
+
+            try
+            {
+                HttpResponseMessage response = await _client.PutAsJsonAsync(url, user);
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    Console.WriteLine("Usuario actualizado exitosamente.");
+                    return "ok";
+                }
+                else
+                {
+                    Console.WriteLine($"Error al actualizar usuario: {response.StatusCode}");
+                    return response.StatusCode.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en la solicitud POST: {ex.Message}");
+                return ex.Message;
+            }
+        }
     }
 
 

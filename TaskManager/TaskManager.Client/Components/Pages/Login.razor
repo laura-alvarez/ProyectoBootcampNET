@@ -41,6 +41,12 @@
                 <InputText @bind-Value="login.Password" type="password" class="form-control" placeholder="Intruduce tu contraseña" />
                 <ValidationMessage For="() => login.Password" />
             </div>
+            @if (error)
+            {
+                <div class="alert alert-danger mt-3" role="alert">
+                    Usuario y/o contraseña incorrectos.
+                </div>
+            }
 
             <div style="text-align:center" class="mb-3">
                 <button type="submit" class="btn btn-primary">Login</button>
@@ -57,6 +63,7 @@
     public LoginDTO login { get; set; } = new();
     private LoginModel isCorrect = new LoginModel();
     private bool IsAuthenticated;
+    private bool error = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -73,7 +80,7 @@
     private async Task onInitNew()
     {
 
-            var (flag, token, message) = await Service.GetUserAsync(login.Email, login.Password);
+        var (flag, token, message) = await Service.CheckUserAsync(login.Email, login.Password);
             if (flag)
             {
                 await localStorage.SignInAsync("UserId", message);
@@ -83,9 +90,12 @@
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
                 if (authState.User.Identity.IsAuthenticated)
                 {
+                    error = false;
                     navManager.NavigateTo("/Index", forceLoad: true);
                 }  
-            }       
+            } else{
+                error = true;
+            }      
         
     }
 

@@ -7,6 +7,7 @@
 @using static TaskManager.Client.Data.Dtos.ServiceResponses
 @inject TaskType Service
 @inject TaskManager.Client.Extensiones.LocalStorage localStorage
+@inject NavigationManager navManager
 
 <div class="container">
     <button @onclick="MostrarModal" class="btn btn-primary text-center">Agregar Tarea</button>
@@ -120,6 +121,10 @@
             try
             {
                 UserId = await localStorage.GetUserIdAsync("UserId");
+                if(UserId == null)
+                {
+                    navManager.NavigateTo("/");
+                }
                 Tareas = await GetAllTaskByUser(UserId);
                 TiposTarea = await GetAllCategories();
                 TiposEstados = await GetAllStates();
@@ -131,6 +136,7 @@
             }
             catch (Exception ex)
             {
+               
                 Console.WriteLine($"Error al obtener el ID de usuario: {ex.Message}");
             }
         }

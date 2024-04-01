@@ -1,0 +1,169 @@
+﻿@page "/MiCuenta"
+
+@rendermode InteractiveServer
+@inject TaskManager.Client.Extensiones.LocalStorage localStorage
+@inject User Service
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthStateProvider
+@using BlazorWebAssemblyApp.Authentication
+
+<div class="container">
+    <div class="text-center mt-5">
+        <img src="myaccount.jpg" alt="Icono de persona" style="width: 100px; height: 100px;" />
+    </div>
+
+    <!-- Formulario -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <EditForm Model="@usuario"  OnValidSubmit="GuardarDatos">
+                <DataAnnotationsValidator />
+
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <InputText id="nombre" @bind-Value="usuario.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => usuario.Nombre)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="apellidos" class="form-label">Apellidos</label>
+                    <InputText id="apellidos" @bind-Value="usuario.Apellidos" class="form-control" />
+                    <ValidationMessage For="@(() => usuario.Apellidos)" />
+                </div>
+
+                <div class="mb-3 form-check">
+                    <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" @bind="mostrarCambiarContrasena" /> ¿Cambiar contraseña?
+                    </label>
+                </div>
+
+                @if (mostrarCambiarContrasena)
+                {
+                    <div>
+                        <div class="mb-3">
+                            <label for="nuevaContrasena" class="form-label">Nueva contraseña</label>
+                            <InputText id="nuevaContrasena" type="password" @bind-Value="usuario.Password" class="form-control" />
+                            <ValidationMessage For="@(() => usuario.Password)" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="repetirContrasena" class="form-label">Repetir contraseña</label>
+                            <InputText id="repetirContrasena" type="password" @bind-Value="usuario.ConfirmPassword" class="form-control" />
+                            <ValidationMessage For="@(() => usuario.ConfirmPassword)" />
+                        </div>
+                    </div>
+                }
+
+                @if (existo)
+                {
+                    <div class="alert alert-success mt-3" role="alert">
+                        Datos actualizados correctamente.
+                    </div>
+                }
+
+                <div class="text-center">
+
+                    <button type="button" class="btn btn-danger mx-2" @onclick="Cancelar">Cancelar</button>
+                    <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool mostrarCambiarContrasena = false;
+    private bool existo = false;
+    private string nuevaContrasena = "";
+    private string repetirContrasena = "";
+    bool DatosCargados = false;
+    private Usuario usuario = new Usuario();
+    string UserId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!DatosCargados)
+        {
+            try
+            {
+                UserId = await localStorage.GetUserIdAsync("UserId");
+                
+                if (UserId == null)
+                {
+                    navManager.NavigateTo("/");
+                }
+                var response = await Service.GetUserAsync(UserId);
+                usuario.Nombre = response.name;
+                usuario.Apellidos = response.lastName;
+                usuario.Password = response.password;
+                usuario.ConfirmPassword = response.password;
+                DatosCargados = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el ID de usuario: {ex.Message}");
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await CargarDatosUsuario();
+        }
+
+
+    }
+
+    private async Task CargarDatosUsuario()
+    {
+        var UserId = await localStorage.GetUserIdAsync("UserId");
+        var response = await Service.GetUserAsync(UserId);
+        usuario.Nombre = response.name;
+        usuario.Apellidos = response.lastName;
+        usuario.Email = response.email;
+    }
+
+    private async Task GuardarDatos()
+    {
+
+        usuario.Nombre = usuario.Nombre;
+        if(nuevaContrasena != "")
+        {
+            usuario.Password = nuevaContrasena;
+        }
+
+        if (repetirContrasena != "")
+        {
+            usuario.ConfirmPassword = repetirContrasena;
+        }
+
+
+        var response = await Service.UpdateUserAsync(usuario.Nombre, usuario.Apellidos, usuario.Email, usuario.Password, UserId);
+
+        if (response == "ok")
+        {
+            var (flag, token, message) = await Service.CheckUserAsync(usuario.Email, usuario.Password);
+            if (flag)
+            {
+
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(token);
+
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                if (authState.User.Identity.IsAuthenticated)
+                {
+                    existo = true;
+                    mostrarCambiarContrasena = false;
+                }
+            }
+        }
+  
+    }
+
+    private void Cancelar()
+    {
+        navManager.NavigateTo("/Index");
+
+    }
+
+}

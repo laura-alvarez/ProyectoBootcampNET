@@ -6,7 +6,7 @@
         public record class LoginResponse(bool Flag, string Token, string Message);
         public record class TaskTypeResponse(int Id, string Category, bool IsDelete);
         public record class TaskStateResponse(int Id, string State, bool IsDelete);
-        public record class TaskResponse(int Id, string TaskName, string TaskDescription, int CategoryID,int StateID);
+        public record class TaskResponse(int Id, string TaskName, string TaskDescription, int CategoryID, string Category, int StateID, string State);
         public record class UserResponse(int id, string name, string lastName, string email, string password);
 
     }

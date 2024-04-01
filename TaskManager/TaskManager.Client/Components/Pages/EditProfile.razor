@@ -62,6 +62,7 @@
                 <div class="text-center">
 
                     <button type="button" class="btn btn-danger mx-2" @onclick="Cancelar">Cancelar</button>
+                  @*   <button type="button" class="btn btn-danger mx-2" @onclick="GuardarDatos">Guardar 2</button> *@
                     <button type="submit" class="btn btn-primary mx-2">Guardar</button>
                 </div>
             </EditForm>
@@ -85,16 +86,17 @@
             try
             {
                 UserId = await localStorage.GetUserIdAsync("UserId");
-                
+                var token = await localStorage.GetUserIdAsync("token");
                 if (UserId == null)
                 {
                     navManager.NavigateTo("/");
                 }
-                var response = await Service.GetUserAsync(UserId);
+                var response = await Service.GetUserAsync(UserId, token);
                 usuario.Nombre = response.name;
                 usuario.Apellidos = response.lastName;
                 usuario.Password = response.password;
                 usuario.ConfirmPassword = response.password;
+                usuario.Email = response.email;
                 DatosCargados = true;
             }
             catch (Exception ex)
@@ -104,20 +106,11 @@
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await CargarDatosUsuario();
-        }
-
-
-    }
-
     private async Task CargarDatosUsuario()
     {
         var UserId = await localStorage.GetUserIdAsync("UserId");
-        var response = await Service.GetUserAsync(UserId);
+        var token = await localStorage.GetUserIdAsync("token");
+        var response = await Service.GetUserAsync(UserId,token);
         usuario.Nombre = response.name;
         usuario.Apellidos = response.lastName;
         usuario.Email = response.email;
@@ -125,6 +118,7 @@
 
     private async Task GuardarDatos()
     {
+        
 
         usuario.Nombre = usuario.Nombre;
         if(nuevaContrasena != "")
@@ -137,8 +131,8 @@
             usuario.ConfirmPassword = repetirContrasena;
         }
 
-
-        var response = await Service.UpdateUserAsync(usuario.Nombre, usuario.Apellidos, usuario.Email, usuario.Password, UserId);
+        var token2 = await localStorage.GetUserIdAsync("token");
+        var response = await Service.UpdateUserAsync(usuario.Nombre, usuario.Apellidos, usuario.Email, usuario.Password, UserId, token2);
 
         if (response == "ok")
         {

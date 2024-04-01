@@ -15,5 +15,6 @@ namespace TaskManager.Client.Data.Dtos
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, seleccione un tipo de tarea")]
         public string? Tipo { get; set; }
         public string? Estado { get; set; }
+        public string? TipoName { get; set; }
     }
 }

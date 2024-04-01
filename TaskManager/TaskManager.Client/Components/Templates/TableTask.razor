@@ -27,7 +27,7 @@
                 <tr>
                     <td>@tarea.Titulo</td>
                     <td class="descripcion-header" title="@tarea.Descripcion">@TruncateDescription(tarea.Descripcion)</td>
-                    <td>@tarea.Tipo</td>
+                    <td>@tarea.TipoName</td>
                     <td>
                         <button @onclick="() => MostrarEdicion(tarea)" class="btn btn-info">
                             <i class="fas fa-pencil-alt"></i> Editar
@@ -155,16 +155,17 @@
     {
         int status = 1;
 
-        if (Estado == "EN PROCESO")
+        if (Estado.ToUpper() == "EN PROCESO")
         {
             status = 2;
         }
-        else if (Estado == "FINALIZADAS")
+        else if (Estado.ToUpper() == "FINALIZADAS")
         {
             status = 3;
         }
 
-        var response = await Service.GetAllTaskByUserID(userId);
+        var token = await localStorage.GetUserIdAsync("token");
+        var response = await Service.GetAllTaskByUserID(userId,token);
 
         response = response.Where(e => e.StateID == status).ToList();
         List<TaskDTO> tareas = new List<TaskDTO>();
@@ -175,6 +176,7 @@
             newTask.Titulo = t.TaskName;
             newTask.Descripcion = t.TaskDescription;
             newTask.Tipo = t.CategoryID.ToString();
+            newTask.TipoName = t.Category;
             newTask.Estado = t.StateID.ToString(); // Asigna el estado de la tarea al nuevo objeto TaskDTO
 
             tareas.Add(newTask);
@@ -185,14 +187,16 @@
 
     private async Task<List<TaskTypeResponse>> GetAllCategories()
     {
-        List<TaskTypeResponse> n = await Service.GetTaskTypeAsync();
+        var token = await localStorage.GetUserIdAsync("token");
+        List<TaskTypeResponse> n = await Service.GetTaskTypeAsync(token);
 
         return n;
     }
 
     private async Task<List<TaskStateResponse>> GetAllStates()
     {
-        List<TaskStateResponse> n = await Service.GetTaskStateAsync();
+        var token = await localStorage.GetUserIdAsync("token");
+        List<TaskStateResponse> n = await Service.GetTaskStateAsync(token);
 
         return n;
     }
@@ -208,14 +212,17 @@
     private async Task HandleValidSubmit()
     {
         string userID = await localStorage.GetUserIdAsync("UserId");
+        var token = await localStorage.GetUserIdAsync("token");
+
         if (BtnText == "Guardar")
         {
-            var response = await Service.CreateTaskAsync(newTask.Titulo, newTask.Descripcion, Int32.Parse(userID), Int32.Parse(newTask.Tipo), 1);
+            
+            var response = await Service.CreateTaskAsync(newTask.Titulo, newTask.Descripcion, Int32.Parse(userID), Int32.Parse(newTask.Tipo), 1, token);
         }
         else
         {
 
-            await Service.UpdateTaskAsync(newTask.Id, newTask.Titulo, newTask.Descripcion, Int32.Parse(userID), Int32.Parse(newTask.Tipo), Int32.Parse(newTask.Estado));
+            await Service.UpdateTaskAsync(newTask.Id, newTask.Titulo, newTask.Descripcion, Int32.Parse(userID), Int32.Parse(newTask.Tipo), Int32.Parse(newTask.Estado), token);
         }
 
         Tareas = await GetAllTaskByUser(UserId);
@@ -254,7 +261,8 @@
     async Task EliminarTarea(TaskDTO tarea)
     {
         string userID = await localStorage.GetUserIdAsync("UserId");
-        await Service.DeleteTaskAsync(tarea.Id);
+        var token = await localStorage.GetUserIdAsync("token");
+        await Service.DeleteTaskAsync(tarea.Id, token);
         Tareas.Remove(tarea);
 
     }

@@ -82,8 +82,7 @@ namespace TaskManager.Application.Services
             else
             {
                 UserResponseModel userEmpty = new UserResponseModel();
-                return new LoginResponse(false, null!, "User not found");
-                //throw new Exception("Datos incorrectos");
+                return new LoginResponse(false, null!, string.Empty);                
             }           
         }
 

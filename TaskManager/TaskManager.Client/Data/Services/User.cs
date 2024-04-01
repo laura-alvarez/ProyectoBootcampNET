@@ -12,8 +12,6 @@ namespace TaskManager.Client.Data.Services
     public class User
     {
         private readonly HttpClient _client;
-        private const string BaseUrl = "api/Account";
-       // private readonly ILocalStorageService localStorageService;
 
         public User(HttpClient client) {
             _client = client;
@@ -33,13 +31,15 @@ namespace TaskManager.Client.Data.Services
             return Generics.DeserializeJsonString<LoginResponse>(apiResponse);
         }
 
-        public async Task<UserResponse> GetUserAsync(string userID)
+        public async Task<UserResponse> GetUserAsync(string userID, string token)
         {
 
             var url = $"User/GetUser?idUser={userID}";
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             var response = await _client.GetAsync(url);
+            _client.DefaultRequestHeaders.Remove("Authorization");
 
-            
+
             if (!response.IsSuccessStatusCode)
                 return new UserResponse(0, "", "", "", "");
 
@@ -85,7 +85,7 @@ namespace TaskManager.Client.Data.Services
         }
 
 
-        public async Task<String> UpdateUserAsync(string name, string lastName, string email, string password, string userID)
+        public async Task<String> UpdateUserAsync(string name, string lastName, string email, string password, string userID, string token)
         {
             var user = new
             {
@@ -99,7 +99,9 @@ namespace TaskManager.Client.Data.Services
 
             try
             {
+                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 HttpResponseMessage response = await _client.PutAsJsonAsync(url, user);
+                _client.DefaultRequestHeaders.Remove("Authorization");
 
                 if (response.IsSuccessStatusCode)
                 {
